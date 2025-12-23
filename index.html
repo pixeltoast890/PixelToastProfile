@@ -3,324 +3,373 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PixelToast - Links</title>
+    <title>PixelToast - Hub</title>
     <style>
-        /* --- GENERAL STYLES --- */
+        /* --- MODERN CSS VARIABLES --- */
         :root {
-            --bg-color: #0d1117; /* Dark GitHub background */
-            --card-bg: #161b22; /* Slightly lighter card background */
-            --text-color: #ffffff;
-            --accent-color: #fca311; /* Toast/Gold color */
-            --accent-secondary: #58a6ff; /* Blue accent */
-            --warning-color: #da3633; /* Red warning */
-            --transition: all 0.3s ease;
+            --bg-dark: #05070a; /* Deeper black background */
+            
+            /* Glassmorphism backgrounds */
+            --glass-bg: rgba(22, 27, 34, 0.70);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --card-hover: rgba(33, 38, 45, 0.9);
+            
+            --text-primary: #ffffff;
+            --text-secondary: #949ba5;
+            
+            /* Toast/Gold Gradient accents */
+            --accent-start: #fca311;
+            --accent-end: #ffc300;
+            --accent-glow: rgba(252, 163, 17, 0.4);
+            
+            --warning: #da3633;
+            --transition-smooth: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --radius-xl: 24px;
+            --radius-md: 16px;
         }
 
         body {
             margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             overflow-x: hidden;
-            position: relative;
+            box-sizing: border-box;
         }
 
-        /* --- ANIMATED TOAST BACKGROUND --- */
+        /* --- ENHANCED ANIMATED BACKGROUND --- */
         #animated-bg {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1; /* Behind everything */
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
             overflow: hidden;
             pointer-events: none;
+            /* Subtle radial gradient for depth */
+            background: radial-gradient(circle at 50% 10%, #1a1f29 0%, var(--bg-dark) 60%);
         }
 
-        .toast-emoji {
+        .bg-emoji {
             position: absolute;
-            bottom: -50px;
-            font-size: 2rem;
-            opacity: 0.5;
+            bottom: -60px;
+            font-size: 2.5rem;
+            opacity: 0.4;
+            filter: blur(1px);
+            will-change: transform, opacity;
             animation: floatUp linear infinite;
         }
 
-        /* Keyframes for floating toast */
         @keyframes floatUp {
-            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
-            10% { opacity: 0.7; }
-            90% { opacity: 0.5; }
-            100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
+            0% { transform: translateY(0) rotate(0deg) scale(0.8); opacity: 0; }
+            20% { opacity: 0.6; }
+            80% { opacity: 0.4; }
+            100% { transform: translateY(-110vh) rotate(360deg) scale(1.1); opacity: 0; }
         }
 
-        /* Configuring different toasts */
-        .t1 { left: 10%; animation-duration: 15s; animation-delay: 0s; font-size: 1.5rem;}
-        .t2 { left: 30%; animation-duration: 12s; animation-delay: 2s; font-size: 2rem;}
-        .t3 { left: 50%; animation-duration: 18s; animation-delay: 1s; font-size: 1.8rem;}
-        .t4 { left: 70%; animation-duration: 14s; animation-delay: 4s; font-size: 2.2rem;}
-        .t5 { left: 90%; animation-duration: 16s; animation-delay: 3s; font-size: 1.6rem;}
+        /* varied variations */
+        .v1 { left: 5%; animation-duration: 18s; animation-delay: -2s; font-size: 2rem;}
+        .v2 { left: 25%; animation-duration: 15s; animation-delay: 1s; font-size: 2.5rem;}
+        .v3 { left: 45%; animation-duration: 20s; animation-delay: -5s; font-size: 2.2rem;}
+        .v4 { left: 65%; animation-duration: 17s; animation-delay: 3s; font-size: 2.8rem;}
+        .v5 { left: 85%; animation-duration: 19s; animation-delay: 0s; font-size: 2rem;}
 
 
-        /* --- AGE VERIFICATION GATE --- */
-        #age-gate {
+        /* --- UTILITY: GLASS STYLE --- */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        /* --- AGE & MODAL GATES --- */
+        .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(13, 17, 23, 0.99);
-            z-index: 1000;
+            background: rgba(5, 7, 10, 0.95); /* Darker overlay */
+            backdrop-filter: blur(10px);
+            z-index: 2000;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            text-align: center;
             padding: 20px;
         }
 
-        .age-box {
-            background: var(--card-bg);
-            padding: 40px;
-            border-radius: 15px;
-            border: 2px solid var(--accent-color);
-            box-shadow: 0 10px 40px rgba(252, 163, 17, 0.2);
+        .modal-box {
+            border-radius: var(--radius-xl);
+            padding: 40px 30px;
+            text-align: center;
             max-width: 400px;
-            animation: fadeInDown 0.6s ease;
+            width: 100%;
+            animation: modalPopIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         
-        .age-box h2 {
-            color: var(--accent-color);
+        #age-gate .modal-box {
+             border-top: 3px solid var(--accent-start);
+             box-shadow: 0 0 50px var(--accent-glow);
         }
 
-        /* --- MAIN CONTENT --- */
+        #exit-modal { display: none; z-index: 3000;}
+        #exit-modal .modal-box {
+             border-top: 3px solid var(--warning);
+             box-shadow: 0 0 40px rgba(218, 54, 51, 0.2);
+        }
+
+        /* --- MAIN CONTENT CONTAINER --- */
         #main-content {
-            display: none; /* Hidden until age accepted */
-            width: 90%;
-            max-width: 550px;
-            padding: 30px 20px;
-            animation: fadeInUp 0.8s ease;
-            /* Optional: Semi-transparent background for readability over toasts */
-            background: rgba(22, 27, 34, 0.85); 
-            border-radius: 20px;
-            backdrop-filter: blur(5px);
-            border: 1px solid #30363d;
-            margin-top: 20px; margin-bottom: 20px;
+            display: none;
+            width: 100%;
+            max-width: 500px;
+            padding: 0; /* Padding handled internally */
+            border-radius: var(--radius-xl);
+            animation: slideUpFade 0.8s ease-out;
+            overflow: hidden; /* For image corners */
+            margin: 20px auto;
+        }
+        
+        .content-padding {
+            padding: 30px 25px;
         }
 
-        /* Header with image on right */
+        /* Header Section */
         .header-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .profile-title {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
+            font-weight: 900;
             margin: 0;
-            /* Toast color gradient */
-            background: linear-gradient(45deg, var(--accent-color), #ffd670);
+            background: linear-gradient(135deg, var(--accent-start), #ffffff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .profile-image-container {
+            position: relative;
         }
 
         .header-image {
-            width: 80px;
-            height: 80px;
+            width: 85px;
+            height: 85px;
             border-radius: 50%;
-            border: 3px solid var(--accent-color);
+            border: 3px solid rgba(252, 163, 17, 0.5);
             object-fit: cover;
-            background-color: #21262d; /* Placeholder color if image fails */
+            box-shadow: 0 0 30px var(--accent-glow);
         }
 
         .description {
-            color: #8b949e;
-            text-align: center;
+            color: var(--text-secondary);
             font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        /* --- LINKS & SECTION IMAGES (The "Cut" Effect) --- */
+        .link-group {
             margin-bottom: 30px;
         }
 
-        /* --- LINKS SECTION --- */
-        .section-divider-img {
+        /* The integrated section header image */
+        .section-header-img {
+            width: 100%;
+            height: 140px; /* Fixed height for banner look */
+            object-fit: cover;
+            border-radius: var(--radius-md) var(--radius-md) 0 0; /* Top rounded only */
+            margin-bottom: 0; /* Crucial: No gap between image and first button */
             display: block;
-            margin: 30px auto 15px auto;
-            max-height: 60px;
-            width: auto;
-            border-radius: 8px;
+            mask-image: linear-gradient(to bottom, black 60%, transparent 100%); /* Fade out bottom edge slightly */
+            -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+            border-bottom: 2px solid var(--glass-border);
         }
 
         .links-container {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
         }
 
         .link-card {
-            background: var(--card-bg);
-            border: 1px solid #30363d;
-            padding: 15px 20px;
-            border-radius: 12px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 20px;
+            border-radius: var(--radius-md);
             text-decoration: none;
-            transition: var(--transition);
+            transition: var(--transition-smooth);
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
             position: relative;
             overflow: hidden;
         }
 
+        /* THE KEY: Style for the button directly under an image */
+        .link-card.attached-top {
+            border-radius: 0 0 var(--radius-md) var(--radius-md); /* Bottom rounded only */
+            border-top: none; /* Remove top border to merge */
+            /* Subtle gradient to show connection */
+            background: linear-gradient(to bottom, rgba(252, 163, 17, 0.15) 0%, var(--glass-bg) 40%);
+            margin-top: -1px; /* Slight overlap to ensure no gap lines */
+        }
+
         .link-card:hover {
-            transform: translateY(-4px);
-            background: #21262d;
-            border-color: var(--accent-color);
-            box-shadow: 0 5px 15px rgba(252, 163, 17, 0.3);
+            background: var(--card-hover);
+            transform: translateY(-4px) scale(1.02);
+            border-color: rgba(252, 163, 17, 0.5);
+            box-shadow: 0 10px 30px -10px var(--accent-glow);
+        }
+
+        .link-card:active {
+             transform: scale(0.98);
         }
 
         .link-title {
-            color: white;
-            font-weight: bold;
-            font-size: 1.2rem;
-            margin-bottom: 5px;
-        }
-
-        .link-desc {
-            color: #8b949e;
-            font-size: 0.9rem;
-        }
-
-        /* --- EXIT CONFIRMATION MODAL --- */
-        #exit-modal {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
-            display: none;
-            justify-content: center;
+            color: var(--text-primary);
+            font-weight: 700;
+            font-size: 1.25rem;
+            margin-bottom: 6px;
+            display: flex;
             align-items: center;
-            z-index: 2000;
+            gap: 8px;
+        }
+        
+        .link-desc {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            font-weight: 500;
         }
 
-        .modal-box {
-            background: var(--card-bg);
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            max-width: 350px;
-            border: 2px solid var(--warning-color);
-            box-shadow: 0 0 20px rgba(218, 54, 51, 0.4);
-        }
-
-        /* --- BUTTON STYLES --- */
+        /* --- BUTTONS --- */
         .btn {
-            padding: 12px 25px;
+            padding: 14px 30px;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
-            font-weight: bold;
-            margin: 10px;
+            font-weight: 800;
             font-size: 1rem;
-            transition: var(--transition);
+            letter-spacing: 0.5px;
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
         }
 
         .btn-confirm { 
-            background: linear-gradient(45deg, var(--accent-color), #e85d04);
-            color: white; 
+            background: linear-gradient(135deg, var(--accent-start), var(--accent-end));
+            color: #000; /* Dark text on bright button */
+            box-shadow: 0 4px 20px var(--accent-glow);
         }
         
-        .btn-cancel { background: #30363d; color: white; }
-        .btn-exit { background: var(--warning-color); color: white; }
+        .btn-cancel { 
+            background: transparent; 
+            color: var(--text-secondary);
+            border: 2px solid var(--glass-border);
+        }
+        .btn-exit { 
+            background: var(--warning); color: white;
+            box-shadow: 0 4px 20px rgba(218, 54, 51, 0.4);
+        }
 
-        .btn:hover { opacity: 0.9; transform: scale(1.05); }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+        .btn-confirm:hover { box-shadow: 0 8px 30px var(--accent-glow); }
 
         /* --- ANIMATIONS --- */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(40px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-30px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes modalPopIn {
+             0% { opacity: 0; transform: scale(0.8); }
+             100% { opacity: 1; transform: scale(1); }
         }
 
-        /* Responsive adjustments */
+        /* Responsive */
         @media (max-width: 480px) {
-             .header-container {
-                flex-direction: column-reverse;
-                gap: 15px;
-            }
-            .profile-title { font-size: 2rem; }
+             .header-container { flex-direction: column-reverse; gap: 20px; text-align: center;}
         }
     </style>
 </head>
 <body>
 
     <div id="animated-bg">
-        <span class="toast-emoji t1">🍞</span>
-        <span class="toast-emoji t2">🍞</span>
-        <span class="toast-emoji t3">🍞</span>
-        <span class="toast-emoji t4">🍞</span>
-        <span class="toast-emoji t5">🍞</span>
-        <span class="toast-emoji t1" style="animation-delay: 7s;">🍞</span>
-        <span class="toast-emoji t3" style="animation-delay: 10s;">🍞</span>
+        <span class="bg-emoji v1">🍞</span> <span class="bg-emoji v3" style="animation-delay: 5s">🍞</span>
+        <span class="bg-emoji v2">🧈</span> <span class="bg-emoji v4" style="animation-delay: 2s">🧈</span>
+        <span class="bg-emoji v5">🥐</span> <span class="bg-emoji v1" style="animation-delay: 8s">🥐</span>
+        <span class="bg-emoji v3">🥖</span> <span class="bg-emoji v2" style="animation-delay: 12s">🥖</span>
+        <span class="bg-emoji v4" style="animation-delay: 15s">🍞</span>
+        <span class="bg-emoji v5" style="animation-delay: 7s">🧈</span>
     </div>
 
-    <div id="age-gate">
-        <div class="age-box">
-            <h2>⚠️ Security Verification</h2>
-            <p>You must be over 18 years old to access this content.</p>
-            <p><small>By accepting, you confirm that you are of legal age.</small></p>
-            <button class="btn btn-confirm" onclick="verifyAge()">I am over 18</button>
+    <div id="age-gate" class="modal-overlay">
+        <div class="modal-box glass-panel">
+            <h2 style="color: var(--accent-start); font-size: 2rem; margin-bottom: 10px;">⚠️ Restricted Area</h2>
+            <p style="color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 30px;">This content is intended for mature audiences only. You must be 18+ to enter.</p>
+            <button class="btn btn-confirm" onclick="verifyAge()">I am 18+ years old</button>
         </div>
     </div>
 
-    <div id="main-content">
+    <div id="main-content" class="glass-panel">
         
-        <div class="header-container">
-            <h1 class="profile-title">PixelToast</h1>
-            <img src="imageP1.png" alt="PixelToast Profile" class="header-image">
+        <div class="content-padding">
+            <div class="header-container">
+                <div>
+                    <h1 class="profile-title">PixelToast</h1>
+                    <span style="color: var(--accent-start); font-weight: bold;">Digital Creator</span>
+                </div>
+                <div class="profile-image-container">
+                    <img src="imageP1.png" alt="PixelToast Profile" class="header-image">
+                </div>
+            </div>
+            
+            <p class="description">Welcome to my centralized hub. Find all my animations, exclusive content, and community links below.</p>
         </div>
-        
-        <p class="description">Welcome to my link hub.</p>
-        
-        <hr style="border: 0.5px solid #30363d; margin: 20px 0;">
         
         <div class="links-container">
             
-            <img src="imageP2.png" alt="Visual Content" class="section-divider-img">
+            <div class="link-group">
+                <img src="imageP2.png" alt="Visual Content Banner" class="section-header-img">
 
-            <a href="#" class="link-card" onclick="confirmExit(event, 'https://x.com/ToastPixel60913')">
-                <div class="link-title">X / Twitter 🍞</div>
-                <div class="link-desc">I publish animations and images here.</div>
-            </a>
+                <a href="#" class="link-card attached-top" onclick="confirmExit(event, 'https://x.com/ToastPixel60913')">
+                    <div class="link-title">X / Twitter <span style="font-size:1rem">🐦</span></div>
+                    <div class="link-desc">Public animations, art, and updates.</div>
+                </a>
 
-             <a href="#" class="link-card" onclick="confirmExit(event, 'https://thisvid.com/members/7113942/')">
-                <div class="link-title">ThisVid 📺</div>
-                <div class="link-desc">Same content as Twitter, uncensored hub.</div>
-            </a>
+                 <a href="#" class="link-card" onclick="confirmExit(event, 'https://thisvid.com/members/7113942/')">
+                    <div class="link-title">ThisVid <span style="font-size:1rem">📺</span></div>
+                    <div class="link-desc">Uncensored video archive and exclusives.</div>
+                </a>
+            </div>
 
-             <img src="imageP3.png" alt="Community Content" class="section-divider-img">
 
-            <a href="#" class="link-card" onclick="confirmExit(event, 'https://discord.gg/R7wUBXG5FN')">
-                <div class="link-title">Discord Server 💬</div>
-                <div class="link-desc">Join for exclusive content and community chatting.</div>
-            </a>
+             <div class="link-group">
+                <img src="imageP3.png" alt="Community Banner" class="section-header-img">
 
-            <a href="#" class="link-card" onclick="confirmExit(event, 'https://www.roblox.com/es/users/7973421008/profile')">
-                <div class="link-title">Roblox Profile 🎮</div>
-                <div class="link-desc">Check out my profile in case you want to add me.</div>
-            </a>
+                <a href="#" class="link-card attached-top" onclick="confirmExit(event, 'https://discord.gg/R7wUBXG5FN')">
+                    <div class="link-title">Discord Server <span style="font-size:1rem">💬</span></div>
+                    <div class="link-desc">The core community. Chat, chill, and exclusives.</div>
+                </a>
+
+                <a href="#" class="link-card" onclick="confirmExit(event, 'https://www.roblox.com/es/users/7973421008/profile')">
+                    <div class="link-title">Roblox Profile <span style="font-size:1rem">🎮</span></div>
+                    <div class="link-desc">My official account if you want to connect.</div>
+                </a>
+            </div>
 
         </div>
     </div>
 
-    <div id="exit-modal">
-        <div class="modal-box">
-            <p style="font-size: 1.5rem; margin-bottom: 10px;"><strong>⚠️ Leaving Site</strong></p>
-            <p>You are about to visit an external link.</p>
-            <p>Are you sure you want to continue?</p>
-            <div style="margin-top: 20px;">
+    <div id="exit-modal" class="modal-overlay">
+        <div class="modal-box glass-panel">
+            <h3 style="font-size: 1.5rem; margin-bottom: 15px;">⚠️ Leaving Site</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 30px;">You are about to visit an external link. Are you sure you want to continue?</p>
+            <div style="display: flex; gap: 15px; justify-content: center;">
                 <button class="btn btn-cancel" onclick="closeModal()">Cancel</button>
                 <button class="btn btn-exit" id="confirm-redirect">Yes, Leave</button>
             </div>
@@ -330,33 +379,36 @@
     <script>
         let pendingUrl = "";
 
-        // Function to accept age
         function verifyAge() {
-            // Fade out the age gate
             const ageGate = document.getElementById('age-gate');
-            ageGate.style.transition = 'opacity 0.5s ease';
+            // Smooth fade out using CSS transition on opacity/transform
+            ageGate.style.transition = 'all 0.6s ease-in';
             ageGate.style.opacity = '0';
+            ageGate.style.transform = 'scale(1.1)';
             
-            // Wait for fade out, then show main content
             setTimeout(() => {
                 ageGate.style.display = 'none';
                 document.getElementById('main-content').style.display = 'block';
-            }, 500);
+                // Force reflow for animation to play correctly
+                void document.getElementById('main-content').offsetWidth; 
+            }, 600);
         }
 
-        // Function to show exit warning modal
         function confirmExit(event, url) {
-            event.preventDefault(); // Stops the immediate redirection
+            event.preventDefault();
             pendingUrl = url;
-            document.getElementById('exit-modal').style.display = 'flex';
+            const modal = document.getElementById('exit-modal');
+            modal.style.display = 'flex';
+            // Slight delay to allow display:flex to apply before animating opacity
+            setTimeout(() => { modal.style.opacity = '1'; }, 10);
         }
 
-        // Function to close the modal
         function closeModal() {
-            document.getElementById('exit-modal').style.display = 'none';
+            const modal = document.getElementById('exit-modal');
+            modal.style.opacity = '0';
+            setTimeout(() => { modal.style.display = 'none'; }, 300);
         }
 
-        // Final Redirection action
         document.getElementById('confirm-redirect').addEventListener('click', () => {
             window.open(pendingUrl, '_blank');
             closeModal();
