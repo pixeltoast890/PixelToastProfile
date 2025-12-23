@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PixelToast - Links</title>
+    <style>
+        /* --- ESTILOS GENERALES --- */
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --text-color: #ffffff;
+            --accent-color: #58a6ff;
+            --warning-color: #f85149;
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* --- PANTALLA DE VERIFICACIÓN DE EDAD --- */
+        #age-gate {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(13, 17, 23, 0.98);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .age-box {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 15px;
+            border: 1px solid #30363d;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            max-width: 400px;
+            animation: fadeInDown 0.6s ease;
+        }
+
+        /* --- CONTENIDO PRINCIPAL --- */
+        #main-content {
+            display: none; /* Se oculta hasta aceptar edad */
+            width: 100%;
+            max-width: 500px;
+            padding: 40px 20px;
+            text-align: center;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .profile-title {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #58a6ff, #bc8cff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .description {
+            color: #8b949e;
+            margin-bottom: 30px;
+        }
+
+        h3 { margin-top: 40px; color: #58a6ff; }
+
+        /* --- BOTONES DE LINKS --- */
+        .links-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .link-card {
+            background: var(--card-bg);
+            border: 1px solid #30363d;
+            padding: 15px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            transition: var(--transition);
+            display: block;
+        }
+
+        .link-card:hover {
+            transform: translateY(-3px);
+            background: #21262d;
+            border-color: var(--accent-color);
+            box-shadow: 0 5px 15px rgba(88, 166, 255, 0.2);
+        }
+
+        /* --- MODAL DE CONFIRMACIÓN DE SALIDA --- */
+        #exit-modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .modal-box {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            max-width: 350px;
+            border: 1px solid var(--warning-color);
+        }
+
+        /* --- BOTONES ESTILO --- */
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 10px;
+            transition: var(--transition);
+        }
+
+        .btn-confirm { background: var(--accent-color); color: white; }
+        .btn-cancel { background: #30363d; color: white; }
+        .btn-exit { background: var(--warning-color); color: white; }
+
+        .btn:hover { opacity: 0.8; transform: scale(1.05); }
+
+        /* --- ANIMACIONES --- */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="age-gate">
+        <div class="age-box">
+            <h2>Verificación de Seguridad</h2>
+            <p>Debes ser mayor de 18 años para acceder a este contenido.</p>
+            <p><small>Al aceptar, confirmas que tienes la edad legal.</small></p>
+            <button class="btn btn-confirm" onclick="verifyAge()">Soy mayor de 18 años</button>
+        </div>
+    </div>
+
+    <div id="main-content">
+        <h1 class="profile-title">Pixel Toast</h1>
+        <p class="description">descripcion</p>
+        
+        <hr style="border: 0.5px solid #30363d;">
+        
+        <h3>Links</h3>
+        <div class="links-container">
+            <a href="#" class="link-card" onclick="confirmExit(event, 'https://x.com/ToastPixel60913')">X / Twitter</a>
+            <a href="#" class="link-card" onclick="confirmExit(event, 'https://discord.gg/R7wUBXG5FN')">Servidor de Discord</a>
+            <a href="#" class="link-card" onclick="confirmExit(event, 'https://www.roblox.com/es/users/7973421008/profile')">Roblox</a>
+            <a href="#" class="link-card" onclick="confirmExit(event, 'https://thisvid.com/members/7113942/')">This Vid</a>
+        </div>
+    </div>
+
+    <div id="exit-modal">
+        <div class="modal-box">
+            <p><strong>⚠️ Aviso de salida</strong></p>
+            <p>Estás saliendo a un link externo. ¿Estás seguro de continuar?</p>
+            <button class="btn btn-cancel" onclick="closeModal()">Cancelar</button>
+            <button class="btn btn-exit" id="confirm-redirect">Sí, salir</button>
+        </div>
+    </div>
+
+    <script>
+        let pendingUrl = "";
+
+        // Función para aceptar edad
+        function verifyAge() {
+            document.getElementById('age-gate').style.display = 'none';
+            document.getElementById('main-content').style.display = 'block';
+        }
+
+        // Función para mostrar advertencia de salida
+        function confirmExit(event, url) {
+            event.preventDefault(); // Evita que el link abra inmediatamente
+            pendingUrl = url;
+            document.getElementById('exit-modal').style.display = 'flex';
+        }
+
+        // Función para cerrar el modal
+        function closeModal() {
+            document.getElementById('exit-modal').style.display = 'none';
+        }
+
+        // Redirección final
+        document.getElementById('confirm-redirect').addEventListener('click', () => {
+            window.open(pendingUrl, '_blank');
+            closeModal();
+        });
+    </script>
+</body>
+</html>
