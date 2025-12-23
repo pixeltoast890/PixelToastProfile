@@ -2,20 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>PixelToast - Hub</title>
     <style>
         /* --- MODERN CSS VARIABLES --- */
         :root {
-            --bg-dark: #05070a; /* Deeper black background */
+            --bg-dark: #05070a;
             
-            /* Glassmorphism backgrounds */
-            --glass-bg: rgba(22, 27, 34, 0.70);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --card-hover: rgba(33, 38, 45, 0.9);
+            /* Professional Glassmorphism */
+            --glass-bg: rgba(22, 27, 34, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --card-hover: rgba(33, 38, 45, 0.95);
             
             --text-primary: #ffffff;
             --text-secondary: #949ba5;
+            --text-tertiary: #6e7681;
             
             /* Toast/Gold Gradient accents */
             --accent-start: #fca311;
@@ -23,41 +24,44 @@
             --accent-glow: rgba(252, 163, 17, 0.4);
             
             --warning: #da3633;
-            --transition-smooth: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --transition-smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             --radius-xl: 24px;
             --radius-md: 16px;
         }
 
+        /* --- BASE TYPOGRAPHY & MOBILE SUPPORT --- */
         body {
             margin: 0;
-            padding: 20px;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            padding: 15px;
+            /* A highly professional, native system font stack */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
             background-color: var(--bg-dark);
             color: var(--text-primary);
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             overflow-x: hidden;
             box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* --- ENHANCED ANIMATED BACKGROUND --- */
+        /* --- DENSE ANIMATED BACKGROUND --- */
         #animated-bg {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1;
             overflow: hidden;
             pointer-events: none;
-            /* Subtle radial gradient for depth */
-            background: radial-gradient(circle at 50% 10%, #1a1f29 0%, var(--bg-dark) 60%);
+            background: radial-gradient(circle at 50% 0%, #1a1f29 0%, var(--bg-dark) 70%);
         }
 
         .bg-emoji {
             position: absolute;
-            bottom: -60px;
-            font-size: 2.5rem;
-            opacity: 0.4;
+            bottom: -80px;
+            font-size: 2rem;
+            opacity: 0.3;
             filter: blur(1px);
             will-change: transform, opacity;
             animation: floatUp linear infinite;
@@ -65,34 +69,38 @@
 
         @keyframes floatUp {
             0% { transform: translateY(0) rotate(0deg) scale(0.8); opacity: 0; }
-            20% { opacity: 0.6; }
-            80% { opacity: 0.4; }
-            100% { transform: translateY(-110vh) rotate(360deg) scale(1.1); opacity: 0; }
+            10% { opacity: 0.5; }
+            90% { opacity: 0.3; }
+            100% { transform: translateY(-120vh) rotate(360deg) scale(1.2); opacity: 0; }
         }
 
-        /* varied variations */
-        .v1 { left: 5%; animation-duration: 18s; animation-delay: -2s; font-size: 2rem;}
-        .v2 { left: 25%; animation-duration: 15s; animation-delay: 1s; font-size: 2.5rem;}
-        .v3 { left: 45%; animation-duration: 20s; animation-delay: -5s; font-size: 2.2rem;}
-        .v4 { left: 65%; animation-duration: 17s; animation-delay: 3s; font-size: 2.8rem;}
-        .v5 { left: 85%; animation-duration: 19s; animation-delay: 0s; font-size: 2rem;}
+        /* More random variations for density */
+        .v1 { left: 2%; animation-duration: 21s; animation-delay: -5s; font-size: 1.8rem;}
+        .v2 { left: 12%; animation-duration: 17s; animation-delay: 1s; font-size: 2.2rem;}
+        .v3 { left: 23%; animation-duration: 24s; animation-delay: -9s; font-size: 1.5rem;}
+        .v4 { left: 35%; animation-duration: 19s; animation-delay: 3s; font-size: 2.5rem;}
+        .v5 { left: 48%; animation-duration: 22s; animation-delay: -2s; font-size: 2rem;}
+        .v6 { left: 60%; animation-duration: 16s; animation-delay: 5s; font-size: 1.9rem;}
+        .v7 { left: 73%; animation-duration: 25s; animation-delay: -7s; font-size: 2.3rem;}
+        .v8 { left: 85%; animation-duration: 18s; animation-delay: 2s; font-size: 1.6rem;}
+        .v9 { left: 94%; animation-duration: 23s; animation-delay: -1s; font-size: 2.1rem;}
 
 
         /* --- UTILITY: GLASS STYLE --- */
         .glass-panel {
             background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
             border: 1px solid var(--glass-border);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
 
-        /* --- AGE & MODAL GATES --- */
+        /* --- GATES & MODALS --- */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(5, 7, 10, 0.95); /* Darker overlay */
-            backdrop-filter: blur(10px);
+            background: rgba(5, 7, 10, 0.92);
+            backdrop-filter: blur(15px);
             z-index: 2000;
             display: flex;
             justify-content: center;
@@ -102,274 +110,287 @@
 
         .modal-box {
             border-radius: var(--radius-xl);
-            padding: 40px 30px;
+            padding: 35px 25px;
             text-align: center;
-            max-width: 400px;
+            max-width: 380px;
             width: 100%;
-            animation: modalPopIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         
         #age-gate .modal-box {
              border-top: 3px solid var(--accent-start);
-             box-shadow: 0 0 50px var(--accent-glow);
-        }
-
-        #exit-modal { display: none; z-index: 3000;}
-        #exit-modal .modal-box {
-             border-top: 3px solid var(--warning);
-             box-shadow: 0 0 40px rgba(218, 54, 51, 0.2);
         }
 
         /* --- MAIN CONTENT CONTAINER --- */
         #main-content {
             display: none;
             width: 100%;
-            max-width: 500px;
-            padding: 0; /* Padding handled internally */
+            max-width: 480px; /* Slightly tighter for professional mobile look */
             border-radius: var(--radius-xl);
             animation: slideUpFade 0.8s ease-out;
-            overflow: hidden; /* For image corners */
-            margin: 20px auto;
+            overflow: hidden;
+            margin-bottom: 20px;
         }
         
         .content-padding {
             padding: 30px 25px;
         }
 
-        /* Header Section */
+        /* Header */
         .header-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .profile-title {
-            font-size: 2.8rem;
-            font-weight: 900;
+            font-size: 2.5rem;
+            font-weight: 800;
             margin: 0;
             background: linear-gradient(135deg, var(--accent-start), #ffffff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: -1px;
-        }
-
-        .profile-image-container {
-            position: relative;
+            letter-spacing: -0.5px;
         }
 
         .header-image {
-            width: 85px;
-            height: 85px;
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
-            border: 3px solid rgba(252, 163, 17, 0.5);
+            border: 3px solid rgba(252, 163, 17, 0.3);
             object-fit: cover;
-            box-shadow: 0 0 30px var(--accent-glow);
+            box-shadow: 0 0 25px var(--accent-glow);
         }
 
         .description {
             color: var(--text-secondary);
-            font-size: 1.1rem;
-            line-height: 1.6;
+            font-size: 1.05rem;
+            line-height: 1.5;
             margin-bottom: 25px;
+            font-weight: 500;
         }
 
-        /* --- LINKS & SECTION IMAGES (The "Cut" Effect) --- */
-        .link-group {
-            margin-bottom: 30px;
-        }
+        /* --- LINKS & SECTIONS --- */
+        .link-group { margin-bottom: 30px; }
 
-        /* The integrated section header image */
         .section-header-img {
             width: 100%;
-            height: 140px; /* Fixed height for banner look */
+            height: 130px;
             object-fit: cover;
-            border-radius: var(--radius-md) var(--radius-md) 0 0; /* Top rounded only */
-            margin-bottom: 0; /* Crucial: No gap between image and first button */
+            border-radius: var(--radius-md) var(--radius-md) 0 0;
             display: block;
-            mask-image: linear-gradient(to bottom, black 60%, transparent 100%); /* Fade out bottom edge slightly */
-            -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+            mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
             border-bottom: 2px solid var(--glass-border);
         }
 
         .links-container {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
         }
 
         .link-card {
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
-            padding: 20px;
+            padding: 18px;
             border-radius: var(--radius-md);
             text-decoration: none;
             transition: var(--transition-smooth);
             display: flex;
             flex-direction: column;
-            position: relative;
-            overflow: hidden;
         }
 
-        /* THE KEY: Style for the button directly under an image */
         .link-card.attached-top {
-            border-radius: 0 0 var(--radius-md) var(--radius-md); /* Bottom rounded only */
-            border-top: none; /* Remove top border to merge */
-            /* Subtle gradient to show connection */
-            background: linear-gradient(to bottom, rgba(252, 163, 17, 0.15) 0%, var(--glass-bg) 40%);
-            margin-top: -1px; /* Slight overlap to ensure no gap lines */
+            border-radius: 0 0 var(--radius-md) var(--radius-md);
+            border-top: none;
+            background: linear-gradient(to bottom, rgba(252, 163, 17, 0.1) 0%, var(--glass-bg) 50%);
+            margin-top: -1px;
         }
 
         .link-card:hover {
             background: var(--card-hover);
-            transform: translateY(-4px) scale(1.02);
-            border-color: rgba(252, 163, 17, 0.5);
-            box-shadow: 0 10px 30px -10px var(--accent-glow);
-        }
-
-        .link-card:active {
-             transform: scale(0.98);
+            transform: translateY(-3px);
+            border-color: rgba(252, 163, 17, 0.4);
         }
 
         .link-title {
             color: var(--text-primary);
             font-weight: 700;
-            font-size: 1.25rem;
-            margin-bottom: 6px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            font-size: 1.15rem;
+            margin-bottom: 4px;
+            display: flex; align-items: center; gap: 8px;
         }
         
         .link-desc {
             color: var(--text-secondary);
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 500;
+        }
+
+        /* New Mega Link Style */
+        .mega-link-notice {
+            text-align: center;
+            margin: 15px 0 5px 0;
+            font-size: 0.9rem;
+            color: var(--accent-start);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .mega-link-notice a {
+            color: var(--accent-start);
+            text-decoration: none;
+            border-bottom: 1px dotted var(--accent-start);
+            transition: var(--transition-smooth);
+        }
+        .mega-link-notice a:hover {
+             color: var(--accent-end);
+             border-bottom-style: solid;
+        }
+
+
+        /* --- FOOTER (GLEP) --- */
+        .glep-footer {
+            display: none; /* Hidden initially */
+            width: 100%;
+            max-width: 480px;
+            margin-top: auto; /* Pushes to bottom */
+            padding: 15px 20px;
+            
+            /* Subtle Glass look */
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius-md);
+            
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-start; /* Align left */
+            gap: 15px;
+            animation: slideUpFade 1s ease-out 0.5s backwards; /* Delays appearance */
+        }
+
+        .glep-gif {
+            width: 45px;
+            height: auto;
+            border-radius: 6px;
+            display: block;
+        }
+
+        .glep-text {
+            color: var(--text-tertiary);
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
         }
 
         /* --- BUTTONS --- */
         .btn {
-            padding: 14px 30px;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: 800;
-            font-size: 1rem;
-            letter-spacing: 0.5px;
+            padding: 12px 28px;
+            border: none; border-radius: 10px;
+            cursor: pointer; font-weight: 700; font-size: 0.95rem;
             transition: var(--transition-smooth);
-            position: relative;
-            overflow: hidden;
         }
-
         .btn-confirm { 
             background: linear-gradient(135deg, var(--accent-start), var(--accent-end));
-            color: #000; /* Dark text on bright button */
-            box-shadow: 0 4px 20px var(--accent-glow);
+            color: #000;
         }
-        
-        .btn-cancel { 
-            background: transparent; 
-            color: var(--text-secondary);
-            border: 2px solid var(--glass-border);
-        }
-        .btn-exit { 
-            background: var(--warning); color: white;
-            box-shadow: 0 4px 20px rgba(218, 54, 51, 0.4);
-        }
+        .btn-cancel { background: transparent; color: var(--text-secondary); border: 2px solid var(--glass-border);}
+        .btn-exit { background: var(--warning); color: white; }
+        .btn:hover { transform: translateY(-2px); opacity: 0.9; }
 
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
-        .btn-confirm:hover { box-shadow: 0 8px 30px var(--accent-glow); }
-
-        /* --- ANIMATIONS --- */
+        /* --- ANIMATIONS & RESPONSIVE --- */
         @keyframes slideUpFade {
-            from { opacity: 0; transform: translateY(40px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        @keyframes modalPopIn {
-             0% { opacity: 0; transform: scale(0.8); }
-             100% { opacity: 1; transform: scale(1); }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Responsive */
         @media (max-width: 480px) {
-             .header-container { flex-direction: column-reverse; gap: 20px; text-align: center;}
+             body { padding: 10px; }
+             .header-container { flex-direction: column-reverse; gap: 15px; text-align: center;}
+             .profile-title { font-size: 2.2rem; }
+             .modal-box { padding: 30px 20px; }
         }
     </style>
 </head>
 <body>
 
     <div id="animated-bg">
-        <span class="bg-emoji v1">🍞</span> <span class="bg-emoji v3" style="animation-delay: 5s">🍞</span>
-        <span class="bg-emoji v2">🧈</span> <span class="bg-emoji v4" style="animation-delay: 2s">🧈</span>
-        <span class="bg-emoji v5">🥐</span> <span class="bg-emoji v1" style="animation-delay: 8s">🥐</span>
-        <span class="bg-emoji v3">🥖</span> <span class="bg-emoji v2" style="animation-delay: 12s">🥖</span>
-        <span class="bg-emoji v4" style="animation-delay: 15s">🍞</span>
-        <span class="bg-emoji v5" style="animation-delay: 7s">🧈</span>
+        <span class="bg-emoji v1">🍞</span> <span class="bg-emoji v5">🍞</span> <span class="bg-emoji v9">🍞</span>
+        <span class="bg-emoji v2">🧈</span> <span class="bg-emoji v6">🧈</span> <span class="bg-emoji v1" style="animation-delay: 5s">🧈</span>
+        <span class="bg-emoji v3">🥐</span> <span class="bg-emoji v7">🥐</span> <span class="bg-emoji v2" style="animation-delay: 7s">🥐</span>
+        <span class="bg-emoji v4">🥖</span> <span class="bg-emoji v8">🥖</span> <span class="bg-emoji v3" style="animation-delay: 3s">🥖</span>
+        <span class="bg-emoji v5">🍞</span> <span class="bg-emoji v2" style="animation-delay: 10s">🍞</span>
+        <span class="bg-emoji v7">🧈</span> <span class="bg-emoji v4" style="animation-delay: 8s">🧈</span>
     </div>
 
     <div id="age-gate" class="modal-overlay">
         <div class="modal-box glass-panel">
-            <h2 style="color: var(--accent-start); font-size: 2rem; margin-bottom: 10px;">⚠️ Restricted Area</h2>
-            <p style="color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 30px;">This content is intended for mature audiences only. You must be 18+ to enter.</p>
-            <button class="btn btn-confirm" onclick="verifyAge()">I am 18+ years old</button>
+            <h2 style="color: var(--accent-start); margin-bottom: 10px;">⚠️ 18+ Content</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 25px; line-height: 1.5;">This content is intended for mature audiences. By continuing, you confirm you are 18 years or older.</p>
+            <button class="btn btn-confirm" onclick="verifyAge()">I am 18+</button>
         </div>
     </div>
 
     <div id="main-content" class="glass-panel">
-        
         <div class="content-padding">
             <div class="header-container">
                 <div>
                     <h1 class="profile-title">PixelToast</h1>
-                    <span style="color: var(--accent-start); font-weight: bold;">NSFW Roblox Content Creator</span>
+                    <span style="color: var(--accent-start); font-weight: 600; font-size: 0.9rem;">Digital Creator</span>
                 </div>
-                <div class="profile-image-container">
-                    <img src="imageP1.png" alt="PixelToast Profile" class="header-image">
-                </div>
+                <img src="imageP1.png" alt="Profile" class="header-image">
             </div>
-            
-            <p class="description">Hi pixel here, im a nsfw content creator thats makes animations of fetish roblox content, and thats all, i talk english and spanish!</p>
+            <p class="description">Official hub for all my animations, exclusive content, and community channels.</p>
         </div>
         
         <div class="links-container">
             
             <div class="link-group">
-                <img src="imageP2.png" alt="Visual Content Banner" class="section-header-img">
+                <img src="imageP2.png" alt="Visual Banner" class="section-header-img">
 
                 <a href="#" class="link-card attached-top" onclick="confirmExit(event, 'https://x.com/ToastPixel60913')">
-                    <div class="link-title">X / Twitter <span style="font-size:1rem">🐦</span></div>
-                    <div class="link-desc">Public animations, art, and updates.</div>
+                    <div class="link-title">X / Twitter 🐦</div>
+                    <div class="link-desc">Latest public animations and art updates.</div>
                 </a>
 
                  <a href="#" class="link-card" onclick="confirmExit(event, 'https://thisvid.com/members/7113942/')">
-                    <div class="link-title">ThisVid <span style="font-size:1rem">📺</span></div>
-                    <div class="link-desc">Uncensored video archive and exclusives.</div>
+                    <div class="link-title">ThisVid 📺</div>
+                    <div class="link-desc">Uncensored video archive hub.</div>
                 </a>
-            </div>
 
+                <p class="mega-link-notice">
+                    ⭐ <a href="#" onclick="confirmExit(event, 'https://discord.gg/R7wUBXG5FN')">MEGA LINK IN THE DISCORD SERVER</a> ⭐
+                </p>
+            </div>
 
              <div class="link-group">
                 <img src="imageP3.png" alt="Community Banner" class="section-header-img">
 
                 <a href="#" class="link-card attached-top" onclick="confirmExit(event, 'https://discord.gg/R7wUBXG5FN')">
-                    <div class="link-title">Discord Server <span style="font-size:1rem">💬</span></div>
-                    <div class="link-desc">The core community. Chat, chill, and exclusives.</div>
+                    <div class="link-title">Discord Server 💬</div>
+                    <div class="link-desc">The core community & exclusive links.</div>
                 </a>
 
                 <a href="#" class="link-card" onclick="confirmExit(event, 'https://www.roblox.com/es/users/7973421008/profile')">
-                    <div class="link-title">Roblox Profile <span style="font-size:1rem">🎮</span></div>
-                    <div class="link-desc">My official account if you want to connect.</div>
+                    <div class="link-title">Roblox Profile 🎮</div>
+                    <div class="link-desc">My official account to connect.</div>
                 </a>
             </div>
-
         </div>
     </div>
 
-    <div id="exit-modal" class="modal-overlay">
-        <div class="modal-box glass-panel">
-            <h3 style="font-size: 1.5rem; margin-bottom: 15px;">⚠️ Leaving Site</h3>
-            <p style="color: var(--text-secondary); margin-bottom: 30px;">You are about to visit an external link. Are you sure you want to continue?</p>
-            <div style="display: flex; gap: 15px; justify-content: center;">
+    <footer class="glep-footer" id="main-footer">
+        <img src="glep.gif" alt="Glep" class="glep-gif">
+        <span class="glep-text">glep</span>
+    </footer>
+
+    <div id="exit-modal" class="modal-overlay" style="display: none; z-index: 3000;">
+        <div class="modal-box glass-panel" style="border-top: 3px solid var(--warning);">
+            <h3 style="margin-bottom: 15px;">Leaving Site</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 25px;">You are about to visit an external link. Continue?</p>
+            <div style="display: flex; gap: 10px; justify-content: center;">
                 <button class="btn btn-cancel" onclick="closeModal()">Cancel</button>
                 <button class="btn btn-exit" id="confirm-redirect">Yes, Leave</button>
             </div>
@@ -381,32 +402,26 @@
 
         function verifyAge() {
             const ageGate = document.getElementById('age-gate');
-            // Smooth fade out using CSS transition on opacity/transform
-            ageGate.style.transition = 'all 0.6s ease-in';
+            ageGate.style.transition = 'all 0.5s ease-in';
             ageGate.style.opacity = '0';
-            ageGate.style.transform = 'scale(1.1)';
+            ageGate.style.transform = 'scale(1.05)';
             
             setTimeout(() => {
                 ageGate.style.display = 'none';
+                // Show main content and footer together
                 document.getElementById('main-content').style.display = 'block';
-                // Force reflow for animation to play correctly
-                void document.getElementById('main-content').offsetWidth; 
-            }, 600);
+                document.getElementById('main-footer').style.display = 'flex'; 
+            }, 500);
         }
 
         function confirmExit(event, url) {
             event.preventDefault();
             pendingUrl = url;
-            const modal = document.getElementById('exit-modal');
-            modal.style.display = 'flex';
-            // Slight delay to allow display:flex to apply before animating opacity
-            setTimeout(() => { modal.style.opacity = '1'; }, 10);
+            document.getElementById('exit-modal').style.display = 'flex';
         }
 
         function closeModal() {
-            const modal = document.getElementById('exit-modal');
-            modal.style.opacity = '0';
-            setTimeout(() => { modal.style.display = 'none'; }, 300);
+            document.getElementById('exit-modal').style.display = 'none';
         }
 
         document.getElementById('confirm-redirect').addEventListener('click', () => {
