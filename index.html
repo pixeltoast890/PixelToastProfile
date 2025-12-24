@@ -5,429 +5,250 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>PixelToast - Hub</title>
     <style>
-        /* --- MODERN CSS VARIABLES --- */
+        /* --- CSS VARIABLES & THEME --- */
         :root {
             --bg-dark: #05070a;
-            
-            /* Professional Glassmorphism */
             --glass-bg: rgba(22, 27, 34, 0.75);
             --glass-border: rgba(255, 255, 255, 0.1);
-            --card-hover: rgba(33, 38, 45, 0.95);
-            
             --text-primary: #ffffff;
             --text-secondary: #949ba5;
-            --text-tertiary: #6e7681;
-            
-            /* Toast/Gold Gradient accents */
             --accent-start: #fca311;
             --accent-end: #ffc300;
-            --accent-glow: rgba(252, 163, 17, 0.4);
-            
-            --warning: #da3633;
-            --transition-smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --accent-glow: rgba(252, 163, 17, 0.3);
             --radius-xl: 24px;
             --radius-md: 16px;
+            --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
-        /* --- BASE TYPOGRAPHY & MOBILE SUPPORT --- */
         body {
-            margin: 0;
-            padding: 15px;
-            /* A highly professional, native system font stack */
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            margin: 0; padding: 15px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-dark);
             color: var(--text-primary);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            overflow-x: hidden;
-            box-sizing: border-box;
-            -webkit-font-smoothing: antialiased;
+            display: flex; flex-direction: column; align-items: center;
+            min-height: 100vh; overflow-x: hidden; box-sizing: border-box;
         }
 
-        /* --- DENSE ANIMATED BACKGROUND --- */
+        /* --- ANIMATED BG (REDUCED FOR PERFORMANCE) --- */
         #animated-bg {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1;
-            overflow: hidden;
-            pointer-events: none;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; overflow: hidden; pointer-events: none;
             background: radial-gradient(circle at 50% 0%, #1a1f29 0%, var(--bg-dark) 70%);
         }
-
         .bg-emoji {
-            position: absolute;
-            bottom: -80px;
-            font-size: 2rem;
-            opacity: 0.3;
-            filter: blur(1px);
-            will-change: transform, opacity;
+            position: absolute; bottom: -80px; font-size: 2rem; opacity: 0.25;
             animation: floatUp linear infinite;
         }
-
         @keyframes floatUp {
-            0% { transform: translateY(0) rotate(0deg) scale(0.8); opacity: 0; }
-            10% { opacity: 0.5; }
-            90% { opacity: 0.3; }
-            100% { transform: translateY(-120vh) rotate(360deg) scale(1.2); opacity: 0; }
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            50% { opacity: 0.4; }
+            100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
         }
 
-        /* More random variations for density */
-        .v1 { left: 2%; animation-duration: 21s; animation-delay: -5s; font-size: 1.8rem;}
-        .v2 { left: 12%; animation-duration: 17s; animation-delay: 1s; font-size: 2.2rem;}
-        .v3 { left: 23%; animation-duration: 24s; animation-delay: -9s; font-size: 1.5rem;}
-        .v4 { left: 35%; animation-duration: 19s; animation-delay: 3s; font-size: 2.5rem;}
-        .v5 { left: 48%; animation-duration: 22s; animation-delay: -2s; font-size: 2rem;}
-        .v6 { left: 60%; animation-duration: 16s; animation-delay: 5s; font-size: 1.9rem;}
-        .v7 { left: 73%; animation-duration: 25s; animation-delay: -7s; font-size: 2.3rem;}
-        .v8 { left: 85%; animation-duration: 18s; animation-delay: 2s; font-size: 1.6rem;}
-        .v9 { left: 94%; animation-duration: 23s; animation-delay: -1s; font-size: 2.1rem;}
-
-
-        /* --- UTILITY: GLASS STYLE --- */
+        /* --- CONTAINERS & VIEWS --- */
         .glass-panel {
             background: var(--glass-bg);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
             border: 1px solid var(--glass-border);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            width: 100%; max-width: 480px; border-radius: var(--radius-xl);
+            overflow: hidden; margin-bottom: 20px;
+            display: none; /* Hidden by default */
+            animation: fadeIn 0.6s ease-out;
         }
 
-        /* --- GATES & MODALS --- */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(5, 7, 10, 0.92);
-            backdrop-filter: blur(15px);
-            z-index: 2000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .modal-box {
-            border-radius: var(--radius-xl);
-            padding: 35px 25px;
-            text-align: center;
-            max-width: 380px;
-            width: 100%;
-        }
-        
-        #age-gate .modal-box {
-             border-top: 3px solid var(--accent-start);
-        }
+        .content-padding { padding: 30px 25px; }
 
-        /* --- MAIN CONTENT CONTAINER --- */
-        #main-content {
-            display: none;
-            width: 100%;
-            max-width: 480px; /* Slightly tighter for professional mobile look */
-            border-radius: var(--radius-xl);
-            animation: slideUpFade 0.8s ease-out;
-            overflow: hidden;
-            margin-bottom: 20px;
-        }
-        
-        .content-padding {
-            padding: 30px 25px;
-        }
+        /* --- HEADERS --- */
+        .header-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .profile-title { font-size: 2.5rem; font-weight: 800; margin: 0; background: linear-gradient(135deg, var(--accent-start), #ffffff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .header-image { width: 75px; height: 75px; border-radius: 50%; border: 3px solid var(--accent-start); object-fit: cover; }
 
-        /* Header */
-        .header-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .profile-title {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin: 0;
-            background: linear-gradient(135deg, var(--accent-start), #ffffff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -0.5px;
-        }
-
-        .header-image {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            border: 3px solid rgba(252, 163, 17, 0.3);
-            object-fit: cover;
-            box-shadow: 0 0 25px var(--accent-glow);
-        }
-
-        .description {
-            color: var(--text-secondary);
-            font-size: 1.05rem;
-            line-height: 1.5;
-            margin-bottom: 25px;
-            font-weight: 500;
-        }
-
-        /* --- LINKS & SECTIONS --- */
-        .link-group { margin-bottom: 30px; }
-
-        .section-header-img {
-            width: 100%;
-            height: 130px;
-            object-fit: cover;
-            border-radius: var(--radius-md) var(--radius-md) 0 0;
-            display: block;
-            mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
-            -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
-            border-bottom: 2px solid var(--glass-border);
-        }
-
-        .links-container {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
+        /* --- CARDS & LINKS --- */
+        .section-header-img { width: 100%; height: 140px; object-fit: cover; display: block; border-bottom: 2px solid var(--glass-border); mask-image: linear-gradient(to bottom, black 80%, transparent); }
         .link-card {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            padding: 18px;
-            border-radius: var(--radius-md);
-            text-decoration: none;
-            transition: var(--transition-smooth);
-            display: flex;
-            flex-direction: column;
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            padding: 18px; text-decoration: none; display: flex; flex-direction: column;
+            transition: var(--transition); color: white;
         }
+        .link-card.attached { border-top: none; border-radius: 0 0 var(--radius-md) var(--radius-md); margin-top: -1px; background: linear-gradient(to bottom, rgba(252, 163, 17, 0.1), var(--glass-bg)); }
+        .link-card.normal { border-radius: var(--radius-md); margin-top: 10px; }
+        .link-card:hover { background: rgba(255,255,255,0.05); transform: translateY(-3px); border-color: var(--accent-start); }
+        .link-title { font-weight: 700; font-size: 1.2rem; margin-bottom: 4px; }
+        .link-desc { color: var(--text-secondary); font-size: 0.9rem; }
 
-        .link-card.attached-top {
-            border-radius: 0 0 var(--radius-md) var(--radius-md);
-            border-top: none;
-            background: linear-gradient(to bottom, rgba(252, 163, 17, 0.1) 0%, var(--glass-bg) 50%);
-            margin-top: -1px;
+        /* --- MY GIRLS SPECIFIC --- */
+        .back-btn {
+            background: rgba(255,255,255,0.1); border: none; color: white;
+            padding: 10px 20px; border-radius: 30px; cursor: pointer;
+            font-weight: 600; margin-bottom: 20px; transition: var(--transition);
         }
+        .back-btn:hover { background: var(--accent-start); color: black; }
 
-        .link-card:hover {
-            background: var(--card-hover);
-            transform: translateY(-3px);
-            border-color: rgba(252, 163, 17, 0.4);
-        }
+        .girl-section { margin-bottom: 25px; }
+        .girl-name { font-size: 1.5rem; font-weight: 800; margin-top: 10px; color: var(--accent-start); }
 
-        .link-title {
-            color: var(--text-primary);
-            font-weight: 700;
-            font-size: 1.15rem;
-            margin-bottom: 4px;
-            display: flex; align-items: center; gap: 8px;
-        }
-        
-        .link-desc {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
+        /* --- MODALS --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 3000; display: flex; justify-content: center; align-items: center; padding: 20px; }
+        .modal-box { background: #161b22; padding: 30px; border-radius: var(--radius-xl); text-align: center; max-width: 400px; border: 1px solid var(--accent-start); }
+        .btn { padding: 12px 25px; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; margin: 10px; transition: var(--transition); }
+        .btn-confirm { background: var(--accent-start); color: black; }
+        .btn-exit { background: #da3633; color: white; }
 
-        /* New Mega Link Style */
-        .mega-link-notice {
-            text-align: center;
-            margin: 15px 0 5px 0;
-            font-size: 0.9rem;
-            color: var(--accent-start);
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .mega-link-notice a {
-            color: var(--accent-start);
-            text-decoration: none;
-            border-bottom: 1px dotted var(--accent-start);
-            transition: var(--transition-smooth);
-        }
-        .mega-link-notice a:hover {
-             color: var(--accent-end);
-             border-bottom-style: solid;
-        }
-
-
-        /* --- FOOTER (GLEP) --- */
-        .glep-footer {
-            display: none; /* Hidden initially */
-            width: 100%;
-            max-width: 480px;
-            margin-top: auto; /* Pushes to bottom */
-            padding: 15px 20px;
-            
-            /* Subtle Glass look */
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border-radius: var(--radius-md);
-            
-            flex-direction: row;
-            align-items: center;
-            justify-content: flex-start; /* Align left */
-            gap: 15px;
-            animation: slideUpFade 1s ease-out 0.5s backwards; /* Delays appearance */
-        }
-
-        .glep-gif {
-            width: 45px;
-            height: auto;
-            border-radius: 6px;
-            display: block;
-        }
-
-        .glep-text {
-            color: var(--text-tertiary);
-            font-weight: 700;
-            font-size: 1.1rem;
-            letter-spacing: 0.5px;
-        }
-
-        /* --- BUTTONS --- */
-        .btn {
-            padding: 12px 28px;
-            border: none; border-radius: 10px;
-            cursor: pointer; font-weight: 700; font-size: 0.95rem;
-            transition: var(--transition-smooth);
-        }
-        .btn-confirm { 
-            background: linear-gradient(135deg, var(--accent-start), var(--accent-end));
-            color: #000;
-        }
-        .btn-cancel { background: transparent; color: var(--text-secondary); border: 2px solid var(--glass-border);}
-        .btn-exit { background: var(--warning); color: white; }
-        .btn:hover { transform: translateY(-2px); opacity: 0.9; }
-
-        /* --- ANIMATIONS & RESPONSIVE --- */
-        @keyframes slideUpFade {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @media (max-width: 480px) {
-             body { padding: 10px; }
-             .header-container { flex-direction: column-reverse; gap: 15px; text-align: center;}
-             .profile-title { font-size: 2.2rem; }
-             .modal-box { padding: 30px 20px; }
-        }
+        /* --- FOOTER --- */
+        .footer { display: none; align-items: center; gap: 10px; margin-top: auto; padding: 20px; opacity: 0.6; }
+        .glep-gif { width: 40px; border-radius: 5px; }
     </style>
 </head>
 <body>
 
-    <div id="animated-bg">
-        <span class="bg-emoji v1">🍞</span> <span class="bg-emoji v5">🍞</span> <span class="bg-emoji v9">🍞</span>
-        <span class="bg-emoji v2">🧈</span> <span class="bg-emoji v6">🧈</span> <span class="bg-emoji v1" style="animation-delay: 5s">🧈</span>
-        <span class="bg-emoji v3">🥐</span> <span class="bg-emoji v7">🥐</span> <span class="bg-emoji v2" style="animation-delay: 7s">🥐</span>
-        <span class="bg-emoji v4">🥖</span> <span class="bg-emoji v8">🥖</span> <span class="bg-emoji v3" style="animation-delay: 3s">🥖</span>
-        <span class="bg-emoji v5">🍞</span> <span class="bg-emoji v2" style="animation-delay: 10s">🍞</span>
-        <span class="bg-emoji v7">🧈</span> <span class="bg-emoji v4" style="animation-delay: 8s">🧈</span>
-    </div>
+    <div id="animated-bg"></div>
 
     <div id="age-gate" class="modal-overlay">
-        <div class="modal-box glass-panel">
-            <h2 style="color: var(--accent-start); margin-bottom: 10px;">⚠️ 18+ Content</h2>
-            <p style="color: var(--text-secondary); margin-bottom: 25px; line-height: 1.5;">This content is intended for mature audiences. By continuing, you confirm you are 18 years or older.</p>
-            <button class="btn btn-confirm" onclick="verifyAge()">I am 18+</button>
+        <div class="modal-box">
+            <h2 style="color: var(--accent-start)">⚠️ 18+ ACCESS</h2>
+            <p>This site contains mature content. Confirm you are over 18.</p>
+            <button class="btn btn-confirm" onclick="initSite()">I am 18+</button>
         </div>
     </div>
 
-    <div id="main-content" class="glass-panel">
+    <div id="main-hub" class="glass-panel">
         <div class="content-padding">
             <div class="header-container">
                 <div>
                     <h1 class="profile-title">PixelToast</h1>
-                    <span style="color: var(--accent-start); font-weight: 600; font-size: 0.9rem;">Digital Creator</span>
+                    <span style="color: var(--accent-start); font-size: 0.9rem; font-weight: bold;">Official Hub</span>
                 </div>
-                <img src="imageP1.png" alt="Profile" class="header-image">
+                <img src="imageP1.png" class="header-image" alt="Profile">
             </div>
-            <p class="description">Official hub for all my animations, exclusive content, and community channels.</p>
+            <p class="description" style="color: var(--text-secondary)">Professional animations & community links.</p>
         </div>
-        
-        <div class="links-container">
-            
-            <div class="link-group">
-                <img src="imageP2.png" alt="Visual Banner" class="section-header-img">
 
-                <a href="#" class="link-card attached-top" onclick="confirmExit(event, 'https://x.com/ToastPixel60913')">
-                    <div class="link-title">X / Twitter 🐦</div>
-                    <div class="link-desc">Latest public animations and art updates.</div>
+        <div style="padding: 0 25px 25px;">
+            <div class="girl-section">
+                <img src="imageP9.png" class="section-header-img" style="border-radius: var(--radius-md) var(--radius-md) 0 0;">
+                <a href="javascript:void(0)" class="link-card attached" onclick="showView('my-girls-view')">
+                    <div class="link-title">My Girls ❤️</div>
+                    <div class="link-desc">Explore the characters and exclusive galleries.</div>
                 </a>
-
-                 <a href="#" class="link-card" onclick="confirmExit(event, 'https://thisvid.com/members/7113942/')">
-                    <div class="link-title">ThisVid 📺</div>
-                    <div class="link-desc">Uncensored video archive hub.</div>
-                </a>
-
-                <p class="mega-link-notice">
-                    ⭐ <a href="#" onclick="confirmExit(event, 'https://discord.gg/R7wUBXG5FN')">MEGA LINK IN THE DISCORD SERVER</a> ⭐
-                </p>
             </div>
 
-             <div class="link-group">
-                <img src="imageP3.png" alt="Community Banner" class="section-header-img">
+            <img src="imageP2.png" class="section-header-img" style="border-radius: var(--radius-md) var(--radius-md) 0 0; margin-top: 20px;">
+            <a href="#" class="link-card attached" onclick="confirmExit(event, 'https://x.com/ToastPixel60913')">
+                <div class="link-title">X / Twitter</div>
+                <div class="link-desc">Public animations and art.</div>
+            </a>
+            
+            <p style="text-align:center; font-size:0.8rem; color:var(--accent-start); font-weight:800; margin: 15px 0;">
+                <a href="#" style="color:inherit; text-decoration:none;" onclick="confirmExit(event, 'https://discord.gg/R7wUBXG5FN')">⭐ MEGA LINK IN THE DISCORD SERVER ⭐</a>
+            </p>
 
-                <a href="#" class="link-card attached-top" onclick="confirmExit(event, 'https://discord.gg/R7wUBXG5FN')">
-                    <div class="link-title">Discord Server 💬</div>
-                    <div class="link-desc">The core community & exclusive links.</div>
-                </a>
+            <img src="imageP3.png" class="section-header-img" style="border-radius: var(--radius-md) var(--radius-md) 0 0; margin-top: 10px;">
+            <a href="#" class="link-card attached" onclick="confirmExit(event, 'https://discord.gg/R7wUBXG5FN')">
+                <div class="link-title">Discord Server</div>
+                <div class="link-desc">Join the community.</div>
+            </a>
+        </div>
+    </div>
 
-                <a href="#" class="link-card" onclick="confirmExit(event, 'https://www.roblox.com/es/users/7973421008/profile')">
-                    <div class="link-title">Roblox Profile 🎮</div>
-                    <div class="link-desc">My official account to connect.</div>
-                </a>
+    <div id="my-girls-view" class="glass-panel">
+        <div class="content-padding">
+            <button class="back-btn" onclick="showView('main-hub')">← Back to Home</button>
+            <img src="imageP9.png" class="section-header-img" style="border-radius: var(--radius-md); height: 180px;">
+            <h1 class="profile-title" style="margin-top: 15px;">My Girls</h1>
+            <p class="description" style="color: var(--text-secondary)">The official PixelToast character roster.</p>
+            
+            <hr style="border: 0; border-top: 1px solid var(--glass-border); margin: 25px 0;">
+
+            <div class="girl-section">
+                <img src="imagePV.png" class="section-header-img" style="border-radius: var(--radius-md) var(--radius-md) 0 0;">
+                <div class="link-card attached">
+                    <div class="girl-name">Veronica</div>
+                    <div class="link-desc">The main protagonist. Exclusive content available.</div>
+                </div>
+            </div>
+
+            <div class="girl-section">
+                <img src="imagePS.png" class="section-header-img" style="border-radius: var(--radius-md) var(--radius-md) 0 0;">
+                <div class="link-card attached">
+                    <div class="girl-name">Sarah</div>
+                    <div class="link-desc">Discover Sarah's special animations.</div>
+                </div>
+            </div>
+
+            <div class="girl-section">
+                <img src="imagePA.png" class="section-header-img" style="border-radius: var(--radius-md) var(--radius-md) 0 0;">
+                <div class="link-card attached">
+                    <div class="girl-name">Alexa</div>
+                    <div class="link-desc">Newest addition to the hub.</div>
+                </div>
+            </div>
+
+            <div class="girl-section">
+                <img src="imagePN.png" class="section-header-img" style="border-radius: var(--radius-md) var(--radius-md) 0 0;">
+                <div class="link-card attached">
+                    <div class="girl-name">Nor</div>
+                    <div class="link-desc">Dark and mysterious. Check her gallery.</div>
+                </div>
             </div>
         </div>
     </div>
 
-    <footer class="glep-footer" id="main-footer">
-        <img src="glep.gif" alt="Glep" class="glep-gif">
-        <span class="glep-text">glep</span>
+    <footer class="footer" id="main-footer">
+        <img src="glep.gif" class="glep-gif" alt="glep">
+        <span style="font-weight: 800; letter-spacing: 1px; color: var(--text-secondary);">glep</span>
     </footer>
 
-    <div id="exit-modal" class="modal-overlay" style="display: none; z-index: 3000;">
-        <div class="modal-box glass-panel" style="border-top: 3px solid var(--warning);">
-            <h3 style="margin-bottom: 15px;">Leaving Site</h3>
-            <p style="color: var(--text-secondary); margin-bottom: 25px;">You are about to visit an external link. Continue?</p>
-            <div style="display: flex; gap: 10px; justify-content: center;">
-                <button class="btn btn-cancel" onclick="closeModal()">Cancel</button>
-                <button class="btn btn-exit" id="confirm-redirect">Yes, Leave</button>
-            </div>
+    <div id="exit-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-box">
+            <h3>⚠️ External Link</h3>
+            <p>Are you sure you want to leave this page?</p>
+            <button class="btn btn-confirm" onclick="closeModal()">Stay</button>
+            <button class="btn btn-exit" id="confirm-redirect">Yes, Exit</button>
         </div>
     </div>
 
     <script>
-        let pendingUrl = "";
-
-        function verifyAge() {
-            const ageGate = document.getElementById('age-gate');
-            ageGate.style.transition = 'all 0.5s ease-in';
-            ageGate.style.opacity = '0';
-            ageGate.style.transform = 'scale(1.05)';
-            
-            setTimeout(() => {
-                ageGate.style.display = 'none';
-                // Show main content and footer together
-                document.getElementById('main-content').style.display = 'block';
-                document.getElementById('main-footer').style.display = 'flex'; 
-            }, 500);
+        // Generate more toast emojis background
+        const bg = document.getElementById('animated-bg');
+        const emojis = ['🍞', '🧈', '🥐', '🥖'];
+        for(let i=0; i<15; i++) {
+            let span = document.createElement('span');
+            span.className = 'bg-emoji';
+            span.innerText = emojis[Math.floor(Math.random()*emojis.length)];
+            span.style.left = Math.random() * 100 + '%';
+            span.style.animationDuration = (Math.random() * 10 + 10) + 's';
+            span.style.animationDelay = (Math.random() * 10) + 's';
+            bg.appendChild(span);
         }
 
-        function confirmExit(event, url) {
-            event.preventDefault();
+        function initSite() {
+            document.getElementById('age-gate').style.display = 'none';
+            document.getElementById('main-hub').style.display = 'block';
+            document.getElementById('main-footer').style.display = 'flex';
+        }
+
+        function showView(viewId) {
+            document.querySelectorAll('.glass-panel').forEach(v => v.style.display = 'none');
+            document.getElementById(viewId).style.display = 'block';
+            window.scrollTo(0,0);
+        }
+
+        let pendingUrl = "";
+        function confirmExit(e, url) {
+            e.preventDefault();
             pendingUrl = url;
             document.getElementById('exit-modal').style.display = 'flex';
         }
 
-        function closeModal() {
-            document.getElementById('exit-modal').style.display = 'none';
-        }
+        function closeModal() { document.getElementById('exit-modal').style.display = 'none'; }
 
-        document.getElementById('confirm-redirect').addEventListener('click', () => {
+        document.getElementById('confirm-redirect').onclick = function() {
             window.open(pendingUrl, '_blank');
             closeModal();
-        });
+        }
     </script>
 </body>
 </html>
