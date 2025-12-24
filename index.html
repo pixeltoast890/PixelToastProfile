@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PixelToast - Hub</title>
+    <title>PixelToast - Official Hub</title>
     <style>
+        /* --- PROFESSIONAL SYSTEM FONT --- */
         :root {
             --bg-dark: #05070a;
-            --glass-bg: rgba(22, 27, 34, 0.85);
+            --glass-bg: rgba(22, 27, 34, 0.8);
             --glass-border: rgba(255, 255, 255, 0.1);
             --accent: #fca311;
             --accent-glow: rgba(252, 163, 17, 0.3);
@@ -15,7 +16,7 @@
             --text-secondary: #949ba5;
             --radius-xl: 24px;
             --radius-md: 16px;
-            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition: all 0.4s ease;
         }
 
         body {
@@ -27,7 +28,7 @@
             min-height: 100vh; overflow-x: hidden; box-sizing: border-box;
         }
 
-        /* --- BACKGROUND ANIMATION --- */
+        /* --- ANIMATED BACKGROUND --- */
         #animated-bg {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1; overflow: hidden; pointer-events: none;
@@ -39,38 +40,38 @@
         }
         @keyframes floatUp {
             0% { transform: translateY(0) rotate(0deg); opacity: 0; }
-            50% { opacity: 0.5; }
+            10% { opacity: 0.5; }
             100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
         }
 
-        /* --- UI PANELS --- */
+        /* --- GLASS PANEL SYSTEM --- */
         .glass-panel {
             background: var(--glass-bg);
             backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
             border: 1px solid var(--glass-border);
             width: 100%; max-width: 500px; border-radius: var(--radius-xl);
             overflow: hidden; margin-bottom: 25px;
-            display: none; 
-            animation: fadeIn 0.6s ease;
+            display: none; /* Controlled by JS */
+            animation: fadeIn 0.8s ease;
         }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeOut { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(1.05); } }
 
         .content-padding { padding: 30px 25px; }
 
-        /* --- HEADER & TITLES --- */
+        /* --- HEADER --- */
         .header-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .profile-title { font-size: 2.6rem; font-weight: 900; margin: 0; background: linear-gradient(135deg, var(--accent), #ffffff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .p1-img { width: 85px; height: 85px; border-radius: 50%; border: 3px solid var(--accent); object-fit: cover; }
+        .p1-img { width: 85px; height: 85px; border-radius: 50%; border: 3px solid var(--accent); object-fit: cover; box-shadow: 0 0 20px var(--accent-glow); }
 
+        /* --- ATTACHED IMAGE STYLE --- */
         .section-img {
             width: 100%; height: 150px; object-fit: cover; display: block;
-            mask-image: linear-gradient(to bottom, black 85%, transparent);
-            -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent);
+            mask-image: linear-gradient(to bottom, black 80%, transparent);
+            -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent);
         }
 
-        /* --- INTERACTIVE CARDS --- */
         .link-card {
             background: var(--glass-bg); border: 1px solid var(--glass-border);
             padding: 20px; text-decoration: none; display: flex; flex-direction: column;
@@ -79,45 +80,74 @@
         }
         .link-card.attached {
             border-top: none; border-radius: 0 0 var(--radius-md) var(--radius-md);
-            margin-top: -5px;
+            margin-top: -5px; 
             background: linear-gradient(to bottom, rgba(252, 163, 17, 0.1), var(--glass-bg));
         }
-        .link-card:hover { background: rgba(255,255,255,0.08); transform: translateY(-3px); border-color: var(--accent); }
+        .link-card:hover { background: rgba(255,255,255,0.05); transform: translateY(-3px); border-color: var(--accent); }
         .link-title { font-weight: 800; font-size: 1.2rem; margin-bottom: 4px; }
-        .link-desc { color: var(--text-secondary); font-size: 0.9rem; }
+        .link-desc { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.4; }
 
-        .mega-notice { text-align: center; color: var(--accent); font-weight: 800; text-decoration: none; display: block; margin: 15px 0; font-size: 0.85rem; letter-spacing: 1px; }
+        /* --- VIDEO PLAYER STYLES --- */
+        .video-wrapper {
+            width: 100%; background: #000; border-radius: var(--radius-md);
+            overflow: hidden; margin-bottom: 20px; border: 1px solid var(--glass-border);
+        }
+        video { width: 100%; display: block; }
+        .play-icon { font-size: 1.5rem; margin-right: 10px; }
 
-        /* --- VIDEO PLAYER STYLING --- */
-        .video-wrapper { width: 100%; background: #000; border-radius: var(--radius-md); overflow: hidden; margin-bottom: 20px; border: 1px solid var(--glass-border); }
-        video { width: 100%; display: block; aspect-ratio: 16/9; }
+        .mega-notice {
+            text-align: center; color: var(--accent); font-weight: 800;
+            text-decoration: none; display: block; margin: 15px 0; font-size: 0.85rem;
+            letter-spacing: 1px; transition: 0.3s;
+        }
+        .mega-notice:hover { transform: scale(1.05); text-shadow: 0 0 10px var(--accent); }
 
-        /* --- MY GIRLS GRID --- */
-        .girl-box { margin-bottom: 25px; }
+        /* --- GIRLS SECTION --- */
+        .girls-container { padding: 0 20px 30px; }
+        .girl-box { margin-bottom: 30px; }
         .girl-img { width: 100%; height: 300px; object-fit: cover; border-radius: var(--radius-md) var(--radius-md) 0 0; }
-        .girl-card { background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-top: none; border-radius: 0 0 var(--radius-md) var(--radius-md); padding: 20px; }
+        .girl-info-card { 
+            background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border);
+            border-top: none; border-radius: 0 0 var(--radius-md) var(--radius-md);
+            padding: 25px;
+        }
+        .girl-name { font-size: 2rem; font-weight: 900; color: var(--accent); margin: 0 0 10px 0; }
 
         .back-btn {
             background: transparent; border: 2px solid var(--accent); color: var(--accent);
-            padding: 12px 25px; border-radius: 30px; cursor: pointer; font-weight: 800;
-            margin: 20px; transition: var(--transition);
+            padding: 12px 30px; border-radius: 40px; cursor: pointer; font-weight: 800;
+            margin: 25px; transition: var(--transition);
         }
         .back-btn:hover { background: var(--accent); color: #000; }
 
         /* --- MODALS --- */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 7, 10, 0.98); z-index: 5000; display: flex; justify-content: center; align-items: center; padding: 20px; }
-        .modal-box { background: #111; padding: 40px 30px; border-radius: var(--radius-xl); text-align: center; max-width: 400px; border: 1px solid var(--accent); }
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 7, 10, 0.95); z-index: 5000;
+            display: flex; justify-content: center; align-items: center; padding: 20px;
+        }
+        .modal-box {
+            background: #111; padding: 40px 30px; border-radius: var(--radius-xl);
+            text-align: center; max-width: 400px; border: 1px solid var(--accent);
+            box-shadow: 0 0 40px var(--accent-glow);
+        }
         .btn { padding: 14px 30px; border: none; border-radius: 12px; font-weight: 800; cursor: pointer; margin: 10px; }
         .btn-confirm { background: var(--accent); color: #000; }
+        .btn-exit { background: #da3633; color: white; }
 
         /* --- FOOTER --- */
-        .footer { display: none; align-items: center; gap: 12px; margin-top: auto; padding: 20px; }
-        .glep-gif { width: 45px; border-radius: 5px; }
-        .glep-text { font-weight: 900; color: var(--text-secondary); }
+        .footer {
+            display: none; align-items: center; gap: 12px; margin-top: auto; padding: 20px;
+            animation: fadeIn 2s ease;
+        }
+        .glep-gif { width: 50px; border-radius: 8px; }
+        .glep-text { font-weight: 900; font-size: 1.3rem; color: var(--text-secondary); letter-spacing: 1px; }
 
         @media (max-width: 500px) {
-            .profile-title { font-size: 2.1rem; }
-            .girl-img { height: 240px; }
+            .header-container { flex-direction: column-reverse; gap: 15px; text-align: center; }
+            .profile-title { font-size: 2.2rem; }
+            .girl-img { height: 220px; }
+            .content-padding { padding: 25px 15px; }
         }
     </style>
 </head>
@@ -127,9 +157,9 @@
 
     <div id="age-gate" class="modal-overlay">
         <div class="modal-box">
-            <h2 style="color: var(--accent)">⚠️ 18+ ACCESS</h2>
-            <p>Confirm you are an adult to enter the PixelToast Hub.</p>
-            <button class="btn btn-confirm" onclick="closeAgeGate()">I AM 18+</button>
+            <h2 style="font-size: 2rem; margin-bottom: 10px;">⚠️ 18+ ACCESS</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 30px;">This site contains mature content. You must be over 18 to enter PixelToast's hub.</p>
+            <button class="btn btn-confirm" onclick="exitAgeGate()">I AM 18+</button>
         </div>
     </div>
 
@@ -138,146 +168,245 @@
             <div class="header-container">
                 <div>
                     <h1 class="profile-title">PixelToast</h1>
-                    <span style="color: var(--accent); font-weight: 800; font-size: 0.8rem;">HUB MENU</span>
+                    <span style="color: var(--accent); font-weight: 800; font-size: 0.8rem; letter-spacing: 2px;">DIGITAL CREATOR</span>
                 </div>
                 <img src="imageP1.png" class="p1-img" alt="Profile">
             </div>
+            <p style="color: var(--text-secondary); line-height: 1.5;">Welcome to my official hub. Access my animations, character galleries, and community links below.</p>
         </div>
 
         <div style="padding: 0 20px 20px;">
             <img src="imageP9.png" class="section-img" style="border-radius: var(--radius-md) var(--radius-md) 0 0;">
-            <div class="link-card attached" onclick="switchView('my-girls-view')">
+            <a href="javascript:void(0)" class="link-card attached" onclick="switchView('my-girls-view')">
                 <div class="link-title">My Girls ❤️</div>
-                <div class="link-desc">Explore the character database and galleries.</div>
-            </div>
+                <div class="link-desc">Enter the character database and exclusive galleries.</div>
+            </a>
 
-            <img src="imageP10.png" class="section-img" style="border-radius: var(--radius-md) var(--radius-md) 0 0; margin-top: 15px;">
-            <div id="video-list-container">
-                </div>
+            <img src="imageP2.png" class="section-img" style="border-radius: var(--radius-md) var(--radius-md) 0 0; margin-top: 20px;">
+            <a href="#" class="link-card attached" onclick="confirmExit(event, 'https://x.com/ToastPixel60913')">
+                <div class="link-title">X / Twitter 🐦</div>
+                <div class="link-desc">Daily animation clips and public art updates.</div>
+            </a>
+            
+            <a href="#" class="link-card" onclick="confirmExit(event, 'https://thisvid.com/members/7113942/')">
+                <div class="link-title">ThisVid 📺</div>
+                <div class="link-desc">Uncensored video archive and full high-quality renders.</div>
+            </a>
 
-            <img src="imageP2.png" class="section-img" style="border-radius: var(--radius-md) var(--radius-md) 0 0; margin-top: 15px;">
-            <div class="link-card attached" onclick="window.open('https://x.com/ToastPixel60913')">
-                <div class="link-title">Twitter / X</div>
-                <div class="link-desc">Daily animation clips and art.</div>
-            </div>
+            <a href="#" class="mega-notice" onclick="confirmExit(event, 'https://discord.gg/R7wUBXG5FN')">
+                ⭐ MEGA LINK IN THE DISCORD SERVER ⭐
+            </a>
 
-            <a href="https://discord.gg/R7wUBXG5FN" class="mega-notice" target="_blank">⭐ MEGA LINK IN DISCORD ⭐</a>
+            <img src="imageP3.png" class="section-img" style="border-radius: var(--radius-md) var(--radius-md) 0 0; margin-top: 10px;">
+            <a href="#" class="link-card attached" onclick="confirmExit(event, 'https://discord.gg/R7wUBXG5FN')">
+                <div class="link-title">Discord Server 💬</div>
+                <div class="link-desc">Join the community for exclusive content and chat.</div>
+            </a>
 
-            <img src="imageP3.png" class="section-img" style="border-radius: var(--radius-md) var(--radius-md) 0 0;">
-            <div class="link-card attached" onclick="window.open('https://discord.gg/R7wUBXG5FN')">
-                <div class="link-title">Discord Community</div>
-                <div class="link-desc">Join for exclusive leaks and chat.</div>
+            <div id="video-section-container" style="margin-top: 30px; display: none;">
+                <h3 style="margin: 0 0 15px 5px; color: var(--accent); text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1.5px;">Video Archive</h3>
+                <div id="video-list">
+                    </div>
             </div>
         </div>
     </div>
 
     <div id="my-girls-view" class="glass-panel">
-        <button class="back-btn" onclick="switchView('main-hub')">← BACK TO MENU</button>
-        <div class="content-padding" style="padding-top:0">
-            <h1 class="profile-title">My Girls</h1>
+        <button class="back-btn" onclick="switchView('main-hub')">← BACK TO HOME</button>
+        
+        <div class="content-padding" style="padding-top: 0;">
+            <img src="imageP9.png" class="section-img" style="border-radius: var(--radius-md); height: 180px;">
+            <h1 class="profile-title" style="margin-top: 15px;">My Girls</h1>
+            <p style="color: var(--text-secondary);">The official PixelToast character roster and galleries.</p>
+        </div>
+
+        <div class="girls-container">
             <div class="girl-box">
-                <img src="imagePV.png" class="girl-img"><div class="girl-card"><h3 style="color:var(--accent);margin:0">Veronica</h3></div>
+                <img src="imagePV.png" class="girl-img">
+                <div class="girl-info-card">
+                    <h3 class="girl-name">Veronica</h3>
+                    <p class="link-desc">The main protagonist. Exclusive animations and galleries available inside.</p>
+                </div>
             </div>
             <div class="girl-box">
-                <img src="imagePS.png" class="girl-img"><div class="girl-card"><h3 style="color:var(--accent);margin:0">Sarah</h3></div>
+                <img src="imagePS.png" class="girl-img">
+                <div class="girl-info-card">
+                    <h3 class="girl-name">Sarah</h3>
+                    <p class="link-desc">Discover the special content featuring Sarah's latest scenes.</p>
+                </div>
             </div>
             <div class="girl-box">
-                <img src="imagePA.png" class="girl-img"><div class="girl-card"><h3 style="color:var(--accent);margin:0">Alexa</h3></div>
+                <img src="imagePA.png" class="girl-img">
+                <div class="girl-info-card">
+                    <h3 class="girl-name">Alexa</h3>
+                    <p class="link-desc">Energetic and favorite. Check out her new dedicated gallery.</p>
+                </div>
             </div>
             <div class="girl-box">
-                <img src="imagePN.png" class="girl-img"><div class="girl-card"><h3 style="color:var(--accent);margin:0">Nor</h3></div>
+                <img src="imagePN.png" class="girl-img">
+                <div class="girl-info-card">
+                    <h3 class="girl-name">Nor</h3>
+                    <p class="link-desc">The mysterious one. Dive into her dark-themed animation sets.</p>
+                </div>
             </div>
         </div>
     </div>
 
-    <div id="player-view" class="glass-panel">
-        <button class="back-btn" onclick="stopAndBack()">← BACK TO VIDEOS</button>
-        <div class="content-padding" style="padding-top:0">
-            <h2 id="current-video-title" style="margin-bottom: 15px; color: var(--accent);">Video Player</h2>
+    <div id="video-player-view" class="glass-panel">
+        <button class="back-btn" onclick="stopAndBack()">← BACK TO MENU</button>
+        <div class="content-padding">
             <div class="video-wrapper">
-                <video id="main-video-player" controls controlsList="nodownload">
+                <video id="main-player" controls controlsList="nodownload">
                     <source src="" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
             </div>
-            <p id="current-video-desc" style="color: var(--text-secondary); line-height: 1.5;"></p>
+            <h2 id="player-title" style="margin: 0; color: var(--accent);">Now Playing</h2>
+            <p style="color: var(--text-secondary); margin-top: 10px;">Exclusive Archive Content</p>
+        </div>
+    </div>
+
+    <div id="exit-modal" class="modal-overlay" style="display: none; z-index: 6000;">
+        <div class="modal-box">
+            <h3>⚠️ LEAVING HUB</h3>
+            <p style="color: var(--text-secondary);">You are redirecting to an external link. Continue?</p>
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <button class="btn" style="background: #222; color: white;" onclick="closeModal()">CANCEL</button>
+                <button class="btn btn-exit" id="confirm-redirect">YES, EXIT</button>
+            </div>
         </div>
     </div>
 
     <footer class="footer" id="main-footer">
-        <img src="glep.gif" class="glep-gif">
+        <img src="glep.gif" class="glep-gif" alt="glep">
         <span class="glep-text">glep</span>
     </footer>
 
     <script>
-        // --- 1. VIDEO CONFIGURATION SYSTEM ---
-        // Add your videos here. The system will look for video1.mp4, video2.mp4, etc.
-        const myVideos = [
-            { id: 1, name: "Intro Animation", desc: "The official PixelToast welcome animation." },
-            { id: 2, name: "Veronica's Clip", desc: "Short loop featuring Veronica." },
-            // To add more, just follow the pattern: { id: 3, name: "...", desc: "..." }
+        /* ----------------------------------------------------
+        SISTEMA DE CONFIGURACIÓN DE VIDEOS
+        ----------------------------------------------------
+        Instrucciones:
+        Solo agrega o quita líneas en esta lista.
+        El script detectará cuántos hay y creará los botones automáticamente.
+        */
+        const videoConfig = [
+            { 
+                fileName: "video1.mp4", 
+                title: "Carribassa Gassy Gift" 
+            },
+            { 
+                fileName: "video2.mp4", 
+                title: "HappyThanksgiving Shit" 
+            },
+            // Copia la estructura de abajo para añadir el video3 cuando lo tengas:
+            // { fileName: "video3.mp4", title: "Otro Titulo Aqui" },
         ];
 
-        // --- 2. GENERATE VIDEO LIST ---
-        function loadVideoButtons() {
-            const container = document.getElementById('video-list-container');
-            myVideos.forEach((vid, index) => {
-                const card = document.createElement('div');
-                card.className = (index === 0) ? "link-card attached" : "link-card";
-                card.innerHTML = `
-                    <div class="link-title">${vid.name} 🎬</div>
-                    <div class="link-desc">${vid.desc}</div>
-                `;
-                card.onclick = () => playVideo(vid.id, vid.name, vid.desc);
-                container.appendChild(card);
-            });
+        /* ---------------------------------------------------- */
+
+        // INICIALIZACIÓN DE VIDEOS
+        function initVideoSystem() {
+            const container = document.getElementById('video-list');
+            const section = document.getElementById('video-section-container');
+
+            // Si hay videos en la lista, mostramos la sección
+            if (videoConfig.length > 0) {
+                section.style.display = 'block';
+                
+                // Limpiar lista por si acaso
+                container.innerHTML = '';
+
+                // Crear un botón por cada video detectado
+                videoConfig.forEach((vid, index) => {
+                    // Crear elemento HTML
+                    const btn = document.createElement('div');
+                    btn.className = 'link-card';
+                    btn.innerHTML = `
+                        <div class="link-title" style="display:flex; align-items:center;">
+                            <span class="play-icon">▶</span> ${vid.title}
+                        </div>
+                        <div class="link-desc">Tap to watch video sequence #${index + 1}</div>
+                    `;
+                    // Añadir evento click
+                    btn.onclick = () => openPlayer(vid.fileName, vid.title);
+                    
+                    // Insertar en la página
+                    container.appendChild(btn);
+                });
+            }
         }
 
-        // --- 3. CORE LOGIC ---
-        function playVideo(id, name, desc) {
-            const player = document.getElementById('main-video-player');
-            const source = player.querySelector('source');
+        // ABRIR REPRODUCTOR
+        function openPlayer(file, title) {
+            const player = document.getElementById('main-player');
+            const titleEl = document.getElementById('player-title');
             
-            source.src = `video${id}.mp4`;
-            document.getElementById('current-video-title').innerText = name;
-            document.getElementById('current-video-desc').innerText = desc;
+            // Asignar archivo y titulo
+            player.src = file;
+            titleEl.innerText = title;
             
-            player.load();
-            switchView('player-view');
+            // Cambiar vista y reproducir
+            switchView('video-player-view');
+            player.play();
         }
 
+        // DETENER VIDEO AL REGRESAR
         function stopAndBack() {
-            document.getElementById('main-video-player').pause();
+            const player = document.getElementById('main-player');
+            player.pause();
+            player.currentTime = 0; // Reiniciar
+            player.src = ""; // Detener carga
             switchView('main-hub');
         }
 
-        function closeAgeGate() {
+        // Generate Toast Background Emojis
+        const bg = document.getElementById('animated-bg');
+        const emojis = ['🍞', '🧈', '🥐', '🥖'];
+        for(let i=0; i<20; i++) {
+            let s = document.createElement('span');
+            s.className = 'bg-emoji';
+            s.innerText = emojis[Math.floor(Math.random()*emojis.length)];
+            s.style.left = Math.random() * 100 + '%';
+            s.style.animationDuration = (Math.random() * 12 + 10) + 's';
+            s.style.animationDelay = (Math.random() * 10) + 's';
+            bg.appendChild(s);
+        }
+
+        // FADE OUT AGE GATE
+        function exitAgeGate() {
             const gate = document.getElementById('age-gate');
-            gate.style.animation = 'fadeOut 0.5s forwards';
+            gate.style.animation = 'fadeOut 0.6s forwards';
             setTimeout(() => {
                 gate.style.display = 'none';
                 document.getElementById('main-hub').style.display = 'block';
                 document.getElementById('main-footer').style.display = 'flex';
-                loadVideoButtons();
-            }, 500);
+                // Cargar los videos cuando se entra
+                initVideoSystem();
+            }, 600);
         }
 
+        // VIEW SWITCHER
         function switchView(viewId) {
-            document.querySelectorAll('.glass-panel').forEach(v => v.style.display = 'none');
-            document.getElementById(viewId).style.display = 'block';
+            document.querySelectorAll('.glass-panel').forEach(p => p.style.display = 'none');
+            const target = document.getElementById(viewId);
+            target.style.display = 'block';
             window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
-        // Background Emojis
-        const bg = document.getElementById('animated-bg');
-        const emojis = ['🍞', '🧈', '🥐', '🥖'];
-        for(let i=0; i<15; i++) {
-            let s = document.createElement('span'); s.className = 'bg-emoji';
-            s.innerText = emojis[Math.floor(Math.random()*emojis.length)];
-            s.style.left = Math.random() * 100 + '%';
-            s.style.animationDuration = (Math.random() * 10 + 10) + 's';
-            s.style.animationDelay = (Math.random() * 8) + 's';
-            bg.appendChild(s);
+        // EXIT SYSTEM
+        let pendingUrl = "";
+        function confirmExit(e, url) {
+            e.preventDefault();
+            pendingUrl = url;
+            document.getElementById('exit-modal').style.display = 'flex';
+        }
+
+        function closeModal() { document.getElementById('exit-modal').style.display = 'none'; }
+
+        document.getElementById('confirm-redirect').onclick = () => {
+            window.open(pendingUrl, '_blank');
+            closeModal();
         }
     </script>
 </body>
