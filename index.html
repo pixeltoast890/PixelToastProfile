@@ -37,7 +37,6 @@
             padding-bottom: 40px;
         }
 
-        /* ── ANIMATED BG ── */
         #animated-bg {
             position: fixed; inset: 0; z-index: -1; overflow: hidden;
             pointer-events: none;
@@ -56,7 +55,6 @@
             100% { transform: translateY(-115vh) rotate(360deg); opacity: 0; }
         }
 
-        /* ── AGE GATE ── */
         .gate-overlay {
             position: fixed; inset: 0;
             background: rgba(8,9,12,0.97);
@@ -74,10 +72,7 @@
             box-shadow: 0 0 60px rgba(252,163,17,0.08);
         }
         .gate-icon { font-size: 2.6rem; margin-bottom: 16px; }
-        .gate-box h2 {
-            font-size: 1.5rem; font-weight: 800;
-            margin-bottom: 10px;
-        }
+        .gate-box h2 { font-size: 1.5rem; font-weight: 800; margin-bottom: 10px; }
         .gate-box p { color: var(--txt-muted); line-height: 1.6; margin-bottom: 28px; font-size: 0.93rem; }
         .gate-btn {
             display: inline-block;
@@ -95,7 +90,6 @@
             to { opacity: 0; transform: scale(1.03); pointer-events: none; }
         }
 
-        /* ── WRAPPER ── */
         .hub-wrap {
             width: 100%; max-width: 540px;
             display: none;
@@ -106,7 +100,6 @@
             to   { opacity: 1; transform: translateY(0); }
         }
 
-        /* ── PROFILE CARD ── */
         .profile-card {
             background: var(--surface);
             border: 1px solid var(--border);
@@ -120,10 +113,7 @@
             background: linear-gradient(135deg, #1a1408, #2a1f00);
         }
         .profile-meta { padding: 0 20px 24px; }
-        .avatar-wrap {
-            margin-top: -40px;
-            margin-bottom: 14px;
-        }
+        .avatar-wrap { margin-top: -40px; margin-bottom: 14px; }
         .avatar {
             width: 80px; height: 80px;
             border-radius: 50%;
@@ -147,11 +137,19 @@
             font-weight: 400;
         }
 
-        /* ── NAV ── */
         .nav-section {
             padding: 16px;
-            display: flex; flex-direction: column; gap: 10px;
+            display: flex; flex-direction: column; gap: 0;
         }
+
+        .nav-img {
+            width: 100%; height: 130px;
+            object-fit: cover; display: block;
+            border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+            mask-image: linear-gradient(to bottom, black 60%, transparent);
+            -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent);
+        }
+
         .nav-card {
             background: var(--surface);
             border: 1px solid var(--border);
@@ -160,13 +158,24 @@
             display: flex; align-items: center; gap: 14px;
             text-decoration: none; color: var(--txt);
             cursor: pointer;
+            margin-bottom: 12px;
             transition: background .2s, border-color .2s, transform .2s;
+        }
+        .nav-card.attached {
+            border-top: none;
+            border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+            margin-top: 0;
+            background: linear-gradient(to bottom, rgba(252,163,17,0.07), var(--surface));
         }
         .nav-card:hover {
             background: var(--surface2);
             border-color: rgba(252,163,17,0.35);
             transform: translateX(3px);
         }
+        .nav-card.attached:hover {
+            background: linear-gradient(to bottom, rgba(252,163,17,0.12), var(--surface2));
+        }
+
         .nav-icon {
             width: 44px; height: 44px;
             background: rgba(252,163,17,0.08);
@@ -186,11 +195,9 @@
         }
         .discord-card:hover { border-color: rgba(88,101,242,0.6); }
 
-        /* ── VIEWS ── */
         .view { display: none; }
         .view.active { display: block; animation: slideUp .45s var(--ease) forwards; }
 
-        /* ── TOP BAR ── */
         .top-bar {
             display: flex; align-items: center; gap: 14px;
             padding: 18px 16px 10px;
@@ -215,7 +222,6 @@
             padding: 6px 16px 4px;
         }
 
-        /* ── GIRLS ── */
         .girls-grid { padding: 8px 16px 16px; display: flex; flex-direction: column; gap: 16px; }
         .girl-card {
             background: var(--surface);
@@ -225,13 +231,9 @@
         }
         .girl-img { width: 100%; height: 260px; object-fit: cover; display: block; }
         .girl-body { padding: 20px; }
-        .girl-name {
-            font-size: 1.3rem; font-weight: 800;
-            color: var(--accent); margin-bottom: 8px;
-        }
+        .girl-name { font-size: 1.3rem; font-weight: 800; color: var(--accent); margin-bottom: 8px; }
         .girl-desc { color: var(--txt-muted); font-size: 0.87rem; line-height: 1.65; }
 
-        /* ── VIDEO CARDS ── */
         .videos-grid { padding: 8px 16px 16px; display: flex; flex-direction: column; gap: 16px; }
         .video-card {
             background: var(--surface);
@@ -262,12 +264,28 @@
             background: linear-gradient(135deg, #111 0%, #1e1a10 100%);
             display: flex; align-items: center; justify-content: center;
             font-size: 3rem;
+            position: absolute; inset: 0;
         }
+        .thumb-loading {
+            position: absolute; inset: 0;
+            background: #0a0a0a;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .thumb-spinner {
+            width: 28px; height: 28px;
+            border: 2px solid rgba(252,163,17,0.2);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin .7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
         .play-badge {
             position: absolute; inset: 0;
             display: flex; align-items: center; justify-content: center;
             background: rgba(0,0,0,0.3);
             transition: background .25s;
+            z-index: 2;
         }
         .video-card:hover .play-badge { background: rgba(0,0,0,0.12); }
         .play-circle {
@@ -297,6 +315,7 @@
             font-size: 0.7rem; font-weight: 600;
             padding: 3px 9px; border-radius: 50px;
             backdrop-filter: blur(6px);
+            z-index: 3;
         }
         .video-info { padding: 18px 20px 20px; }
         .video-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 7px; line-height: 1.3; }
@@ -310,7 +329,6 @@
             padding: 3px 10px; border-radius: 50px;
         }
 
-        /* ── PLAYER ── */
         .player-wrap { padding: 10px 16px 20px; }
         .player-box {
             background: #000;
@@ -323,7 +341,6 @@
         .player-title { font-size: 1.25rem; font-weight: 800; margin-bottom: 8px; }
         .player-desc  { color: var(--txt-muted); font-size: 0.9rem; line-height: 1.6; }
 
-        /* ── EXIT MODAL ── */
         .modal-overlay {
             position: fixed; inset: 0;
             background: rgba(8,9,12,0.88);
@@ -368,7 +385,6 @@
 
 <div id="animated-bg"></div>
 
-<!-- AGE GATE -->
 <div id="age-gate" class="gate-overlay">
     <div class="gate-box">
         <div class="gate-icon">🔞</div>
@@ -378,7 +394,6 @@
     </div>
 </div>
 
-<!-- EXIT MODAL -->
 <div id="exit-modal" class="modal-overlay">
     <div class="modal-box">
         <div class="modal-icon">🔗</div>
@@ -391,10 +406,8 @@
     </div>
 </div>
 
-<!-- MAIN WRAPPER -->
 <div class="hub-wrap" id="hub-wrap">
 
-    <!-- HOME -->
     <div id="view-home" class="view">
         <div class="profile-card" style="margin:16px 16px 0;">
             <img src="banner.png" class="banner" alt="Banner"
@@ -409,7 +422,9 @@
         </div>
 
         <div class="nav-section">
-            <div class="nav-card" onclick="switchView('view-girls')">
+
+            <img src="imageP9.png" class="nav-img">
+            <div class="nav-card attached" onclick="switchView('view-girls')">
                 <div class="nav-icon">❤️</div>
                 <div class="nav-text-wrap">
                     <div class="nav-label">My Girls</div>
@@ -427,7 +442,8 @@
                 <div class="nav-arrow">›</div>
             </div>
 
-            <a href="#" class="nav-card" onclick="confirmExit(event,'https://x.com/ToastPixel60913')">
+            <img src="imageP2.png" class="nav-img" style="margin-top:4px;">
+            <a href="#" class="nav-card attached" onclick="confirmExit(event,'https://x.com/ToastPixel60913')">
                 <div class="nav-icon">𝕏</div>
                 <div class="nav-text-wrap">
                     <div class="nav-label">X / Twitter</div>
@@ -436,7 +452,8 @@
                 <div class="nav-arrow">›</div>
             </a>
 
-            <a href="#" class="nav-card discord-card" onclick="confirmExit(event,'https://discord.gg/R7wUBXG5FN')">
+            <img src="imageP3.png" class="nav-img" style="margin-top:4px;">
+            <a href="#" class="nav-card attached discord-card" onclick="confirmExit(event,'https://discord.gg/R7wUBXG5FN')">
                 <div class="nav-icon" style="background:rgba(88,101,242,0.12);border-color:rgba(88,101,242,0.25);">💬</div>
                 <div class="nav-text-wrap">
                     <div class="nav-label">Discord Server</div>
@@ -444,10 +461,10 @@
                 </div>
                 <div class="nav-arrow">›</div>
             </a>
+
         </div>
     </div>
 
-    <!-- GIRLS -->
     <div id="view-girls" class="view">
         <div class="top-bar">
             <button class="back-btn" onclick="switchView('view-home')">← Back</button>
@@ -486,7 +503,6 @@
         </div>
     </div>
 
-    <!-- VIDEOS -->
     <div id="view-videos" class="view">
         <div class="top-bar">
             <button class="back-btn" onclick="switchView('view-home')">← Back</button>
@@ -496,7 +512,6 @@
         <div class="videos-grid" id="videos-grid"></div>
     </div>
 
-    <!-- PLAYER -->
     <div id="view-player" class="view">
         <div class="top-bar">
             <button class="back-btn" onclick="stopAndBack()">← Back</button>
@@ -513,43 +528,78 @@
         </div>
     </div>
 
-</div><!-- /hub-wrap -->
+</div>
 
 <script>
-/* ══════════════════════════════════════════
-   VIDEO CONFIG — edit titles, descriptions,
-   and thumbnail / file names here (4 videos)
-══════════════════════════════════════════ */
 const videoConfig = [
     {
         fileName: "video1.mp4",
-        thumb:    "thumb1.png",
         title:    "Carribassa Gassy Gift",
-        desc:     "Add a short description for this video here. A couple sentences works great.",
+        desc:     "45",
         tag:      "Animation"
     },
     {
         fileName: "video2.mp4",
-        thumb:    "thumb2.png",
-        title:    "HappyThanksgiving Shit",
-        desc:     "Add a short description for this video here. A couple sentences works great.",
+        title:    "Thanksgiving Shit",
+        desc:     "2",
         tag:      "Animation"
     },
     {
         fileName: "video3.mp4",
-        thumb:    "thumb3.png",
-        title:    "Video Title Here",
-        desc:     "Add a short description for this video here. A couple sentences works great.",
+        title:    "Sarah Christmas Dump",
+        desc:     "1",
         tag:      "Animation"
     },
     {
         fileName: "video4.mp4",
-        thumb:    "thumb4.png",
-        title:    "Video Title Here",
-        desc:     "Add a short description for this video here. A couple sentences works great.",
+        title:    "Hinata Gassy Hallway",
+        desc:     "Parte 1 :V.",
         tag:      "Animation"
     },
 ];
+
+function captureThumb(videoSrc, imgEl, loadingEl) {
+    const vid = document.createElement('video');
+    vid.crossOrigin = 'anonymous';
+    vid.muted = true;
+    vid.playsInline = true;
+    vid.preload = 'metadata';
+
+    vid.addEventListener('loadedmetadata', () => {
+        vid.currentTime = Math.min(2, vid.duration * 0.1);
+    });
+
+    vid.addEventListener('seeked', () => {
+        const canvas = document.createElement('canvas');
+        canvas.width  = vid.videoWidth  || 640;
+        canvas.height = vid.videoHeight || 360;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(vid, 0, 0, canvas.width, canvas.height);
+        try {
+            imgEl.src = canvas.toDataURL('image/jpeg', 0.85);
+            imgEl.style.display = 'block';
+            if (loadingEl) loadingEl.remove();
+        } catch(e) {
+            if (loadingEl) loadingEl.remove();
+            showFallback(imgEl.parentElement);
+        }
+        vid.src = '';
+    });
+
+    vid.addEventListener('error', () => {
+        if (loadingEl) loadingEl.remove();
+        showFallback(imgEl.parentElement);
+    });
+
+    vid.src = videoSrc;
+}
+
+function showFallback(wrap) {
+    const fb = document.createElement('div');
+    fb.className = 'thumb-fallback';
+    fb.textContent = '🎬';
+    wrap.insertBefore(fb, wrap.firstChild);
+}
 
 function initVideos() {
     const grid = document.getElementById('videos-grid');
@@ -557,23 +607,48 @@ function initVideos() {
     videoConfig.forEach((v, i) => {
         const card = document.createElement('div');
         card.className = 'video-card';
-        card.innerHTML = `
-            <div class="video-thumb-wrap">
-                <img class="video-thumb" src="${v.thumb}" alt="${v.title}"
-                     onerror="this.parentElement.innerHTML='<div class=\\'thumb-fallback\\'>🎬</div><div class=\\'play-badge\\'><div class=\\'play-circle\\'><div class=\\'play-triangle\\'></div></div></div><span class=\\'vid-num\\'>#${i+1}</span>'">
-                <div class="play-badge">
-                    <div class="play-circle"><div class="play-triangle"></div></div>
-                </div>
-                <span class="vid-num">#${i+1}</span>
-            </div>
-            <div class="video-info">
-                <div class="video-title">${v.title}</div>
-                <p class="video-desc">${v.desc}</p>
-                <span class="video-tag">${v.tag}</span>
-            </div>
+
+        const thumbWrap = document.createElement('div');
+        thumbWrap.className = 'video-thumb-wrap';
+
+        const loading = document.createElement('div');
+        loading.className = 'thumb-loading';
+        const spinner = document.createElement('div');
+        spinner.className = 'thumb-spinner';
+        loading.appendChild(spinner);
+
+        const img = document.createElement('img');
+        img.className = 'video-thumb';
+        img.alt = v.title;
+        img.style.display = 'none';
+
+        const playBadge = document.createElement('div');
+        playBadge.className = 'play-badge';
+        playBadge.innerHTML = '<div class="play-circle"><div class="play-triangle"></div></div>';
+
+        const numBadge = document.createElement('span');
+        numBadge.className = 'vid-num';
+        numBadge.textContent = '#' + (i + 1);
+
+        thumbWrap.appendChild(loading);
+        thumbWrap.appendChild(img);
+        thumbWrap.appendChild(playBadge);
+        thumbWrap.appendChild(numBadge);
+
+        const info = document.createElement('div');
+        info.className = 'video-info';
+        info.innerHTML = `
+            <div class="video-title">${v.title}</div>
+            <p class="video-desc">${v.desc}</p>
+            <span class="video-tag">${v.tag}</span>
         `;
+
+        card.appendChild(thumbWrap);
+        card.appendChild(info);
         card.onclick = () => openPlayer(v);
         grid.appendChild(card);
+
+        captureThumb(v.fileName, img, loading);
     });
 }
 
@@ -625,7 +700,6 @@ document.getElementById('confirm-redirect').onclick = () => {
     closeModal();
 };
 
-/* background emojis */
 const bg = document.getElementById('animated-bg');
 ['🍞','🧈','🥐','🥖','🍳'].forEach(em => {
     for (let i = 0; i < 4; i++) {
