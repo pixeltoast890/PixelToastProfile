@@ -559,18 +559,6 @@
                         <div class="nav-arrow">›</div>
                     </a>
                 </div>
-
-                <div class="nav-combo discord-combo">
-                    <img src="imageP3.png" class="nav-img">
-                    <a href="#" class="nav-card" onclick="confirmExit(event,'https://discord.gg/R7wUBXG5FN')">
-                        <div class="nav-icon" style="background:rgba(88,101,242,0.12);border-color:rgba(88,101,242,0.25);">💬</div>
-                        <div class="nav-text-wrap">
-                            <div class="nav-label">Discord Server</div>
-                            <div class="nav-desc">Community, chat &amp; MEGA link inside ⭐</div>
-                        </div>
-                        <div class="nav-arrow">›</div>
-                    </a>
-                </div>
             </div>
         </div>
 
@@ -595,6 +583,18 @@
                         <div class="nav-desc">Full collection of exclusive animated content</div>
                     </div>
                     <div class="nav-arrow">›</div>
+                </div>
+
+                <div class="nav-combo discord-combo">
+                    <img src="imageP3.png" class="nav-img">
+                    <a href="#" class="nav-card" onclick="confirmExit(event,'https://discord.gg/R7wUBXG5FN')">
+                        <div class="nav-icon" style="background:rgba(88,101,242,0.12);border-color:rgba(88,101,242,0.25);">💬</div>
+                        <div class="nav-text-wrap">
+                            <div class="nav-label">Discord Server</div>
+                            <div class="nav-desc">Community, chat &amp; MEGA link inside ⭐</div>
+                        </div>
+                        <div class="nav-arrow">›</div>
+                    </a>
                 </div>
             </div>
         </div>
@@ -725,10 +725,26 @@ function captureThumb(videoSrc, imgEl, loadingEl) {
     vid.crossOrigin = 'anonymous';
     vid.muted = true;
     vid.playsInline = true;
-    vid.preload = 'metadata';
+    vid.preload = 'auto';
+    vid.style.position = 'fixed';
+    vid.style.top = '0';
+    vid.style.left = '0';
+    vid.style.width = '1px';
+    vid.style.height = '1px';
+    vid.style.opacity = '0';
+    vid.style.pointerEvents = 'none';
+    document.body.appendChild(vid);
+
+    const cleanup = () => {
+        vid.pause();
+        vid.removeAttribute('src');
+        vid.load();
+        vid.remove();
+    };
 
     vid.addEventListener('loadedmetadata', () => {
-        vid.currentTime = Math.min(2, vid.duration * 0.1);
+        const mid = (isFinite(vid.duration) && vid.duration > 0) ? vid.duration / 2 : 1;
+        vid.currentTime = mid;
     });
 
     vid.addEventListener('seeked', () => {
@@ -745,15 +761,21 @@ function captureThumb(videoSrc, imgEl, loadingEl) {
             if (loadingEl) loadingEl.remove();
             showFallback(imgEl.parentElement);
         }
-        vid.src = '';
-    });
+        cleanup();
+    }, { once: true });
 
     vid.addEventListener('error', () => {
         if (loadingEl) loadingEl.remove();
         showFallback(imgEl.parentElement);
+        cleanup();
     });
 
     vid.src = videoSrc;
+    vid.load();
+    const playAttempt = vid.play();
+    if (playAttempt !== undefined) {
+        playAttempt.then(() => vid.pause()).catch(() => {});
+    }
 }
 
 function showFallback(wrap) {
