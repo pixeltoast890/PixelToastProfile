@@ -100,6 +100,9 @@
             to   { opacity: 1; transform: translateY(0); }
         }
 
+        .home-grid { display: flex; flex-direction: column; }
+        .home-col-left, .home-col-right { display: flex; flex-direction: column; }
+
         .profile-card {
             background: var(--surface);
             border: 1px solid var(--border);
@@ -194,6 +197,10 @@
 
         .view { display: none; }
         .view.active { display: block; animation: slideUp .45s var(--ease) forwards; }
+        .home-grid.active { display: flex; }
+        @media (min-width: 900px) {
+            .home-grid.active { display: grid; }
+        }
 
         .top-bar {
             display: flex; align-items: center; gap: 14px;
@@ -219,19 +226,43 @@
             padding: 6px 16px 4px;
         }
 
-        .girls-grid { padding: 8px 16px 16px; display: flex; flex-direction: column; gap: 16px; }
+        .filter-tabs {
+            display: flex; gap: 8px; flex-wrap: wrap;
+            padding: 4px 16px 10px;
+        }
+        .filter-btn {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: var(--txt-muted);
+            font-size: 0.78rem; font-weight: 600;
+            padding: 7px 14px; border-radius: 50px;
+            cursor: pointer;
+            transition: all .2s var(--ease);
+        }
+        .filter-btn:hover { border-color: rgba(252,163,17,0.5); color: var(--txt); }
+        .filter-btn.active {
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: #08090c;
+            border-color: transparent;
+        }
+
+        .girls-grid, .videos-grid {
+            padding: 8px 16px 16px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+        }
         .girl-card {
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: var(--radius);
             overflow: hidden;
         }
-        .girl-img { width: 100%; height: 260px; object-fit: cover; display: block; }
-        .girl-body { padding: 20px; }
-        .girl-name { font-size: 1.3rem; font-weight: 800; color: var(--accent); margin-bottom: 8px; }
-        .girl-desc { color: var(--txt-muted); font-size: 0.87rem; line-height: 1.65; }
+        .girl-img { width: 100%; height: 190px; object-fit: cover; display: block; }
+        .girl-body { padding: 14px; }
+        .girl-name { font-size: 1.05rem; font-weight: 800; color: var(--accent); margin-bottom: 6px; }
+        .girl-desc { color: var(--txt-muted); font-size: 0.78rem; line-height: 1.55; }
 
-        .videos-grid { padding: 8px 16px 16px; display: flex; flex-direction: column; gap: 16px; }
         .video-card {
             background: var(--surface);
             border: 1px solid var(--border);
@@ -260,7 +291,7 @@
             position: absolute; inset: 0;
             background: linear-gradient(135deg, #111 0%, #1e1a10 100%);
             display: flex; align-items: center; justify-content: center;
-            font-size: 3rem;
+            font-size: 2.4rem;
         }
         .thumb-loading {
             position: absolute; inset: 0;
@@ -268,7 +299,7 @@
             display: flex; align-items: center; justify-content: center;
         }
         .thumb-spinner {
-            width: 28px; height: 28px;
+            width: 24px; height: 24px;
             border: 2px solid rgba(252,163,17,0.2);
             border-top-color: var(--accent);
             border-radius: 50%;
@@ -284,7 +315,7 @@
         }
         .video-card:hover .play-badge { background: rgba(0,0,0,0.12); }
         .play-circle {
-            width: 60px; height: 60px;
+            width: 46px; height: 46px;
             background: rgba(252,163,17,0.9);
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
@@ -297,34 +328,33 @@
         }
         .play-triangle {
             width: 0; height: 0;
-            border-top: 11px solid transparent;
-            border-bottom: 11px solid transparent;
-            border-left: 18px solid #08090c;
-            margin-left: 4px;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            border-left: 14px solid #08090c;
+            margin-left: 3px;
         }
         .vid-num {
-            position: absolute; top: 10px; left: 10px;
+            position: absolute; top: 8px; left: 8px;
             background: rgba(8,9,12,0.72);
             border: 1px solid rgba(255,255,255,0.1);
             color: var(--txt-muted);
-            font-size: 0.7rem; font-weight: 600;
-            padding: 3px 9px; border-radius: 50px;
+            font-size: 0.65rem; font-weight: 600;
+            padding: 3px 8px; border-radius: 50px;
             backdrop-filter: blur(6px);
             z-index: 3;
         }
-        .video-info { padding: 18px 20px 20px; }
-        .video-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 7px; line-height: 1.3; }
-        .video-desc  { color: var(--txt-muted); font-size: 0.85rem; line-height: 1.6; margin-bottom: 12px; }
+        .video-info { padding: 12px 14px 14px; }
+        .video-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 5px; line-height: 1.3; }
+        .video-desc  { color: var(--txt-muted); font-size: 0.76rem; line-height: 1.5; margin-bottom: 8px; }
         .video-tag {
             display: inline-block;
             background: rgba(252,163,17,0.1);
             border: 1px solid rgba(252,163,17,0.2);
             color: var(--accent);
-            font-size: 0.7rem; font-weight: 600;
-            padding: 3px 10px; border-radius: 50px;
+            font-size: 0.65rem; font-weight: 600;
+            padding: 3px 9px; border-radius: 50px;
         }
 
-        /* ── FULL-SCREEN PLAYER VIEW ── */
         #view-player {
             position: fixed;
             inset: 0;
@@ -435,7 +465,12 @@
             .banner { height: 130px; }
             .avatar { width: 68px; height: 68px; }
             .avatar-wrap { margin-top: -34px; }
-            .girl-img { height: 210px; }
+            .girl-img { height: 140px; }
+            .girls-grid, .videos-grid { gap: 10px; padding: 8px 12px 12px; }
+        }
+        @media (min-width: 900px) {
+            .hub-wrap { max-width: 980px; }
+            .home-grid { display: grid; grid-template-columns: 340px 1fr; gap: 16px; align-items: start; }
         }
         @media (min-width: 700px) {
             .player-video-wrap video { max-height: 70vh; }
@@ -469,58 +504,64 @@
 
 <div class="hub-wrap" id="hub-wrap">
 
-    <div id="view-home" class="view">
-        <div class="profile-card" style="margin:16px 16px 0;">
-            <img src="banner.png" class="banner" alt="Banner"
-                 onerror="this.style.background='linear-gradient(135deg,#1a1408,#2a1f00)';this.style.height='160px';">
-            <div class="profile-meta">
-                <div class="avatar-wrap">
-                    <img src="imageP1.png" class="avatar" alt="PixelToast">
+    <div id="view-home" class="view home-grid">
+        <div class="home-col-left">
+            <div class="profile-card">
+                <img src="banner.png" class="banner" alt="Banner"
+                     onerror="this.style.background='linear-gradient(135deg,#1a1408,#2a1f00)';this.style.height='160px';">
+                <div class="profile-meta">
+                    <div class="avatar-wrap">
+                        <img src="imageP1.png" class="avatar" alt="PixelToast">
+                    </div>
+                    <div class="profile-name">PixelToast</div>
+                    <p class="profile-bio">Welcome to the official PixelToast hub — your go-to spot for exclusive NSFW animated content, character galleries, and community links.</p>
                 </div>
-                <div class="profile-name">PixelToast</div>
-                <p class="profile-bio">Welcome to the official PixelToast hub — your go-to spot for exclusive NSFW animated content, character galleries, and community links.</p>
+            </div>
+
+            <div class="nav-section">
+                <img src="imageP2.png" class="nav-img">
+                <a href="#" class="nav-card attached" onclick="confirmExit(event,'https://x.com/ToastPixel60913')">
+                    <div class="nav-icon">𝕏</div>
+                    <div class="nav-text-wrap">
+                        <div class="nav-label">X / Twitter</div>
+                        <div class="nav-desc">i uplaod all of my content here, and usually some updates about some animations</div>
+                    </div>
+                    <div class="nav-arrow">›</div>
+                </a>
+
+                <img src="imageP3.png" class="nav-img" style="margin-top:4px;">
+                <a href="#" class="nav-card attached discord-card" onclick="confirmExit(event,'https://discord.gg/R7wUBXG5FN')">
+                    <div class="nav-icon" style="background:rgba(88,101,242,0.12);border-color:rgba(88,101,242,0.25);">💬</div>
+                    <div class="nav-text-wrap">
+                        <div class="nav-label">Discord Server</div>
+                        <div class="nav-desc">Community, chat &amp; MEGA link inside ⭐</div>
+                    </div>
+                    <div class="nav-arrow">›</div>
+                </a>
             </div>
         </div>
 
-        <div class="nav-section">
-            <img src="imageP9.png" class="nav-img">
-            <div class="nav-card attached" onclick="switchView('view-girls')">
-                <div class="nav-icon">❤️</div>
-                <div class="nav-text-wrap">
-                    <div class="nav-label">My Girls</div>
-                    <div class="nav-desc">Character database and exclusive galleries</div>
+        <div class="home-col-right">
+            <div class="nav-section">
+                <img src="imageP9.png" class="nav-img">
+                <div class="nav-card attached" onclick="switchView('view-girls')">
+                    <div class="nav-icon">❤️</div>
+                    <div class="nav-text-wrap">
+                        <div class="nav-label">My Girls</div>
+                        <div class="nav-desc">Character database and exclusive galleries</div>
+                    </div>
+                    <div class="nav-arrow">›</div>
                 </div>
-                <div class="nav-arrow">›</div>
+
+                <div class="nav-card" onclick="switchView('view-videos')">
+                    <div class="nav-icon">🎬</div>
+                    <div class="nav-text-wrap">
+                        <div class="nav-label">Video Archive</div>
+                        <div class="nav-desc">Full collection of exclusive animated content</div>
+                    </div>
+                    <div class="nav-arrow">›</div>
+                </div>
             </div>
-
-            <div class="nav-card" onclick="switchView('view-videos')">
-                <div class="nav-icon">🎬</div>
-                <div class="nav-text-wrap">
-                    <div class="nav-label">Video Archive</div>
-                    <div class="nav-desc">Full collection of exclusive animated content</div>
-                </div>
-                <div class="nav-arrow">›</div>
-            </div>
-
-            <img src="imageP2.png" class="nav-img" style="margin-top:4px;">
-            <a href="#" class="nav-card attached" onclick="confirmExit(event,'https://x.com/ToastPixel60913')">
-                <div class="nav-icon">𝕏</div>
-                <div class="nav-text-wrap">
-                    <div class="nav-label">X / Twitter</div>
-                    <div class="nav-desc">i uplaod all of my content here, and usually some updates about some animations</div>
-                </div>
-                <div class="nav-arrow">›</div>
-            </a>
-
-            <img src="imageP3.png" class="nav-img" style="margin-top:4px;">
-            <a href="#" class="nav-card attached discord-card" onclick="confirmExit(event,'https://discord.gg/R7wUBXG5FN')">
-                <div class="nav-icon" style="background:rgba(88,101,242,0.12);border-color:rgba(88,101,242,0.25);">💬</div>
-                <div class="nav-text-wrap">
-                    <div class="nav-label">Discord Server</div>
-                    <div class="nav-desc">Community, chat &amp; MEGA link inside ⭐</div>
-                </div>
-                <div class="nav-arrow">›</div>
-            </a>
         </div>
     </div>
 
@@ -567,7 +608,21 @@
             <button class="back-btn" onclick="switchView('view-home')">← Back</button>
             <span class="top-bar-title">Video Archive</span>
         </div>
-        <div class="section-label">Exclusive Releases</div>
+        <div class="section-label">Categories</div>
+        <div class="filter-tabs" id="filter-tabs">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="categoria1">Categoria 1</button>
+            <button class="filter-btn" data-filter="categoria2">Categoria 2</button>
+            <button class="filter-btn" data-filter="categoria3">Categoria 3</button>
+        </div>
+        <div class="section-label">Characters</div>
+        <div class="filter-tabs" id="character-tabs">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="Veronica">Veronica</button>
+            <button class="filter-btn" data-filter="Sarah">Sarah</button>
+            <button class="filter-btn" data-filter="Alexa">Alexa</button>
+            <button class="filter-btn" data-filter="Nor">Nor</button>
+        </div>
         <div class="videos-grid" id="videos-grid"></div>
     </div>
 
@@ -597,27 +652,38 @@ const videoConfig = [
         fileName: "video1.mp4",
         title:    "Carribassa Gassy Gift",
         desc:     "45",
-        tag:      "Animation"
+        tag:      "Animation",
+        category: "categoria1",
+        character:"Veronica"
     },
     {
         fileName: "video2.mp4",
         title:    "Thanksgiving Shit",
         desc:     "2",
-        tag:      "Animation"
+        tag:      "Animation",
+        category: "categoria1",
+        character:"Sarah"
     },
     {
         fileName: "video3.mp4",
         title:    "Sarah Christmas Dump",
         desc:     "1",
-        tag:      "Animation"
+        tag:      "Animation",
+        category: "categoria2",
+        character:"Sarah"
     },
     {
         fileName: "video4.mp4",
         title:    "Hinata Gassy Hallway",
         desc:     "Parte 1 :V.",
-        tag:      "Animation"
+        tag:      "Animation",
+        category: "categoria3",
+        character:"Alexa"
     },
 ];
+
+let catFilter = 'all';
+let charFilter = 'all';
 
 function captureThumb(videoSrc, imgEl, loadingEl) {
     const vid = document.createElement('video');
@@ -668,6 +734,8 @@ function initVideos() {
     videoConfig.forEach((v, i) => {
         const card = document.createElement('div');
         card.className = 'video-card';
+        card.dataset.category = v.category;
+        card.dataset.character = v.character;
 
         const thumbWrap = document.createElement('div');
         thumbWrap.className = 'video-thumb-wrap';
@@ -711,7 +779,34 @@ function initVideos() {
 
         captureThumb(v.fileName, img, loading);
     });
+    applyFilters();
 }
+
+function applyFilters() {
+    document.querySelectorAll('#videos-grid .video-card').forEach(card => {
+        const okCat = catFilter === 'all' || card.dataset.category === catFilter;
+        const okChar = charFilter === 'all' || card.dataset.character === charFilter;
+        card.style.display = (okCat && okChar) ? '' : 'none';
+    });
+}
+
+document.querySelectorAll('#filter-tabs .filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('#filter-tabs .filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        catFilter = btn.dataset.filter;
+        applyFilters();
+    });
+});
+
+document.querySelectorAll('#character-tabs .filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('#character-tabs .filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        charFilter = btn.dataset.filter;
+        applyFilters();
+    });
+});
 
 function openPlayer(v) {
     const player = document.getElementById('main-player');
