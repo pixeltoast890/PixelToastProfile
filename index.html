@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PixelToast – Official Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg:        #08090c;
+            --surface:   #0f1117;
+            --surface2:  #171923;
+            --border:    rgba(255,255,255,0.08);
+            --accent:    #fca311;
+            --accent2:   #ff6b35;
+            --glow:      rgba(252,163,17,0.18);
+            --txt:       #f0f2f5;
+            --txt-muted: #7a8494;
+            --radius:    20px;
+            --radius-sm: 12px;
+            --ease:      cubic-bezier(.4,0,.2,1);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--txt);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding-bottom: 40px;
+        }
+
+        #animated-bg {
+            position: fixed; inset: 0; z-index: -1; overflow: hidden;
+            pointer-events: none;
+            background: radial-gradient(ellipse 80% 50% at 50% -10%, #1c1408 0%, var(--bg) 70%);
+        }
+        .bg-emoji {
+            position: absolute; bottom: -80px; opacity: 0;
+            font-size: 1.8rem;
+            animation: floatUp linear infinite;
+            filter: blur(0.5px);
+        }
+        @keyframes floatUp {
+            0%   { transform: translateY(0) rotate(0deg); opacity: 0; }
+            8%   { opacity: 0.2; }
+            92%  { opacity: 0.1; }
+            100% { transform: translateY(-115vh) rotate(360deg); opacity: 0; }
+        }
+
+        .gate-overlay {
+            position: fixed; inset: 0;
+            background: rgba(8,9,12,0.97);
+            z-index: 9999;
+            display: flex; justify-content: center; align-items: center;
+            padding: 24px;
+        }
+        .gate-box {
+            background: var(--surface);
+            border: 1px solid rgba(252,163,17,0.3);
+            border-radius: var(--radius);
+            padding: 44px 32px;
+            max-width: 380px; width: 100%;
+            text-align: center;
+            box-shadow: 0 0 60px rgba(252,163,17,0.08);
+        }
+        .gate-icon { font-size: 2.6rem; margin-bottom: 16px; }
+        .gate-box h2 { font-size: 1.5rem; font-weight: 800; margin-bottom: 10px; }
+        .gate-box p { color: var(--txt-muted); line-height: 1.6; margin-bottom: 28px; font-size: 0.93rem; }
+        .gate-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: #08090c;
+            font-weight: 700; font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            padding: 14px 36px;
+            border: none; border-radius: 50px;
+            cursor: pointer;
+            transition: transform .2s var(--ease), box-shadow .2s var(--ease);
+        }
+        .gate-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px var(--glow); }
+        @keyframes fadeOut {
+            to { opacity: 0; transform: scale(1.03); pointer-events: none; }
+        }
+
+        .hub-wrap {
+            width: 100%; max-width: 540px;
+            margin: 0 auto;
+            display: none;
+            animation: slideUp .6s var(--ease) forwards;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .home-grid { display: flex; flex-direction: column; }
+        .home-col-left, .home-col-right { display: flex; flex-direction: column; }
+
+        .profile-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin: 16px 16px 0;
+        }
+        .banner {
+            width: 100%; height: 160px;
+            object-fit: cover; display: block;
+            background: linear-gradient(135deg, #1a1408, #2a1f00);
+        }
+        .profile-meta { padding: 0 20px 24px; }
+        .avatar-wrap { margin-top: -40px; margin-bottom: 14px; }
+        .avatar {
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            border: 3px solid var(--surface);
+            outline: 2px solid var(--accent);
+            object-fit: cover;
+            box-shadow: 0 0 20px var(--glow);
+            display: block;
+        }
+        .profile-name {
+            font-size: 1.6rem; font-weight: 800;
+            background: linear-gradient(120deg, var(--accent), #ffe0a0);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            line-height: 1.1;
+            margin-bottom: 10px;
+        }
+        .profile-bio {
+            color: var(--txt-muted);
+            font-size: 0.9rem;
+            line-height: 1.65;
+            font-weight: 400;
+        }
+
+        .girls-banner {
+            width: 100%;
+            max-height: 170px;
+            object-fit: cover;
+            display: block;
+            border-radius: var(--radius-sm);
+            margin: 4px 16px 14px;
+            width: calc(100% - 32px);
+        }
+
+        /* Right-column nav images: show the FULL image (no cropping).
+           Fixed-height box, image keeps its natural size, and the box
+           scrolls vertically if the image is taller than the box. */
+        .nav-img-scroll {
+            width: 100%;
+            height: 130px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+            background: var(--surface2);
+        }
+        .nav-img-scroll .nav-img {
+            height: auto;
+            object-fit: unset;
+            mask-image: none;
+            -webkit-mask-image: none;
+            border-radius: 0;
+        }
+        .nav-img-scroll::-webkit-scrollbar { width: 6px; }
+        .nav-img-scroll::-webkit-scrollbar-thumb {
+            background: rgba(252,163,17,0.4);
+            border-radius: 10px;
+        }
+
+        .nav-section {
+            padding: 8px 16px 16px;
+            display: flex; flex-direction: column; gap: 0;
+        }
+        .nav-img {
+            width: 100%; height: 130px;
+            object-fit: cover; display: block;
+            border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+            mask-image: linear-gradient(to bottom, black 60%, transparent);
+            -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent);
+        }
+        .nav-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 16px 18px;
+            display: flex; align-items: center; gap: 14px;
+            text-decoration: none; color: var(--txt);
+            cursor: pointer;
+            margin-bottom: 12px;
+            transition: background .2s, border-color .2s, transform .2s;
+        }
+        .nav-card.attached {
+            border-top: none;
+            border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+            margin-top: 0;
+            background: linear-gradient(to bottom, rgba(252,163,17,0.07), var(--surface));
+        }
+        .nav-card:hover {
+            background: var(--surface2);
+            border-color: rgba(252,163,17,0.35);
+            transform: translateX(3px);
+        }
+        .nav-card.attached:hover {
+            background: linear-gradient(to bottom, rgba(252,163,17,0.12), var(--surface2));
+        }
+        .nav-icon {
+            width: 44px; height: 44px;
+            background: rgba(252,163,17,0.08);
+            border: 1px solid rgba(252,163,17,0.18);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.25rem; flex-shrink: 0;
+        }
+        .nav-text-wrap { flex: 1; min-width: 0; }
+        .nav-label { font-size: 0.95rem; font-weight: 700; margin-bottom: 2px; }
+        .nav-desc  { color: var(--txt-muted); font-size: 0.82rem; line-height: 1.4; }
+        .nav-arrow { color: var(--txt-muted); font-size: 1.1rem; margin-left: auto; flex-shrink: 0; }
+
+        .nav-combo {
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            margin-bottom: 12px;
+            transition: border-color .2s, transform .2s;
+        }
+        .nav-combo:hover { border-color: rgba(252,163,17,0.35); transform: translateX(3px); }
+        .nav-combo .nav-img { border-radius: 0; }
+        .nav-combo .nav-card {
+            border: none;
+            border-radius: 0;
+            margin-bottom: 0;
+            background: linear-gradient(to bottom, rgba(252,163,17,0.07), var(--surface));
+        }
+        .nav-combo .nav-card:hover {
+            background: linear-gradient(to bottom, rgba(252,163,17,0.12), var(--surface2));
+            transform: none;
+        }
+        .nav-combo.discord-combo { border-color: rgba(88,101,242,0.28); }
+        .nav-combo.discord-combo:hover { border-color: rgba(88,101,242,0.6); }
+        .nav-combo.discord-combo .nav-card {
+            background: linear-gradient(135deg, rgba(88,101,242,0.1), rgba(252,163,17,0.04));
+        }
+        .nav-combo.discord-combo .nav-card:hover {
+            background: linear-gradient(135deg, rgba(88,101,242,0.16), rgba(252,163,17,0.06));
+        }
+
+        .discord-card {
+            background: linear-gradient(135deg, rgba(88,101,242,0.1), rgba(252,163,17,0.04));
+            border-color: rgba(88,101,242,0.28);
+        }
+        .discord-card:hover { border-color: rgba(88,101,242,0.6); }
+
+        .view { display: none; }
+        .view.active { display: block; animation: slideUp .45s var(--ease) forwards; }
+        .home-grid.active { display: flex; }
+        @media (min-width: 900px) {
+            .home-grid.active { display: grid; }
+        }
+
+        .top-bar {
+            display: flex; align-items: center; gap: 14px;
+            padding: 18px 16px 10px;
+        }
+        .back-btn {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: var(--txt);
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-size: 0.82rem; font-weight: 600;
+            cursor: pointer;
+            transition: border-color .2s, background .2s;
+        }
+        .back-btn:hover { border-color: var(--accent); background: rgba(252,163,17,0.07); }
+        .top-bar-title { font-size: 1.05rem; font-weight: 700; }
+
+        .section-label {
+            font-size: 0.72rem; font-weight: 600;
+            letter-spacing: 2px; color: var(--txt-muted);
+            text-transform: uppercase;
+            padding: 6px 16px 4px;
+        }
+
+        .filter-tabs {
+            display: flex; gap: 8px; flex-wrap: wrap;
+            padding: 4px 16px 10px;
+        }
+        .filter-btn {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: var(--txt-muted);
+            font-size: 0.78rem; font-weight: 600;
+            padding: 7px 14px; border-radius: 50px;
+            cursor: pointer;
+            transition: all .2s var(--ease);
+        }
+        .filter-btn:hover { border-color: rgba(252,163,17,0.5); color: var(--txt); }
+        .filter-btn.active {
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: #08090c;
+            border-color: transparent;
+        }
+
+        .girls-grid, .videos-grid {
+            padding: 8px 16px 16px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+        }
+        .girl-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+        .girl-img { width: 100%; height: 320px; object-fit: cover; display: block; }
+        .girl-body { padding: 20px; }
+        .girl-name { font-size: 1.3rem; font-weight: 800; color: var(--accent); margin-bottom: 10px; }
+        .girl-desc { color: var(--txt-muted); font-size: 0.9rem; line-height: 1.6; }
+
+        #view-girls .girls-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+            padding: 8px 16px 20px;
+        }
+        @media (min-width: 600px) {
+            #view-girls .girls-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (min-width: 1100px) {
+            #view-girls .girls-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        .video-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            cursor: pointer;
+            transition: border-color .25s, transform .25s, box-shadow .25s;
+        }
+        .video-card:hover {
+            border-color: rgba(252,163,17,0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+        }
+        .video-thumb-wrap {
+            position: relative;
+            width: 100%; aspect-ratio: 16/9;
+            overflow: hidden; background: #000;
+        }
+        .video-thumb {
+            width: 100%; height: 100%;
+            object-fit: cover; display: block;
+            transition: transform .4s var(--ease);
+        }
+        .video-card:hover .video-thumb { transform: scale(1.04); }
+        .thumb-fallback {
+            position: absolute; inset: 0;
+            background: linear-gradient(135deg, #111 0%, #1e1a10 100%);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.4rem;
+        }
+        .thumb-loading {
+            position: absolute; inset: 0;
+            background: #0a0a0a;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .thumb-spinner {
+            width: 24px; height: 24px;
+            border: 2px solid rgba(252,163,17,0.2);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin .7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .play-badge {
+            position: absolute; inset: 0;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(0,0,0,0.3);
+            transition: background .25s;
+            z-index: 2;
+        }
+        .video-card:hover .play-badge { background: rgba(0,0,0,0.12); }
+        .play-circle {
+            width: 46px; height: 46px;
+            background: rgba(252,163,17,0.9);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 24px rgba(252,163,17,0.45);
+            transition: transform .2s, box-shadow .2s;
+        }
+        .video-card:hover .play-circle {
+            transform: scale(1.1);
+            box-shadow: 0 6px 32px rgba(252,163,17,0.65);
+        }
+        .play-triangle {
+            width: 0; height: 0;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            border-left: 14px solid #08090c;
+            margin-left: 3px;
+        }
+        .vid-num {
+            position: absolute; top: 8px; left: 8px;
+            background: rgba(8,9,12,0.72);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--txt-muted);
+            font-size: 0.65rem; font-weight: 600;
+            padding: 3px 8px; border-radius: 50px;
+            backdrop-filter: blur(6px);
+            z-index: 3;
+        }
+        .video-info { padding: 12px 14px 14px; }
+        .video-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 5px; line-height: 1.3; }
+        .video-desc  { color: var(--txt-muted); font-size: 0.76rem; line-height: 1.5; margin-bottom: 8px; }
+        .video-tag {
+            display: inline-block;
+            background: rgba(252,163,17,0.1);
+            border: 1px solid rgba(252,163,17,0.2);
+            color: var(--accent);
+            font-size: 0.65rem; font-weight: 600;
+            padding: 3px 9px; border-radius: 50px;
+        }
+
+        #view-player {
+            position: fixed;
+            inset: 0;
+            z-index: 7000;
+            background: #000;
+            display: none;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        #view-player.active {
+            display: flex;
+            animation: none;
+        }
+
+        .player-topbar {
+            display: flex; align-items: center; gap: 14px;
+            padding: 14px 16px;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(10px);
+            position: sticky; top: 0; z-index: 10;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            flex-shrink: 0;
+        }
+        .player-topbar .back-btn {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(255,255,255,0.12);
+        }
+        .player-topbar .back-btn:hover {
+            background: rgba(252,163,17,0.12);
+            border-color: var(--accent);
+        }
+        .player-topbar-title { font-size: 1rem; font-weight: 700; }
+
+        .player-video-wrap {
+            width: 100%;
+            background: #000;
+            flex-shrink: 0;
+            position: relative;
+        }
+        .player-video-wrap video {
+            width: 100%;
+            display: block;
+            max-height: 56vw;
+            min-height: 200px;
+        }
+
+        .player-meta {
+            flex: 1;
+            padding: 20px 20px 32px;
+            background: linear-gradient(to bottom, #0a0a0a, var(--bg));
+        }
+        .player-title-text {
+            font-size: 1.3rem; font-weight: 800;
+            margin-bottom: 8px; line-height: 1.3;
+        }
+        .player-desc-text {
+            color: var(--txt-muted);
+            font-size: 0.9rem; line-height: 1.65;
+            margin-bottom: 16px;
+        }
+        .player-divider {
+            height: 1px;
+            background: var(--border);
+            margin-bottom: 16px;
+        }
+        .player-tag {
+            display: inline-block;
+            background: rgba(252,163,17,0.1);
+            border: 1px solid rgba(252,163,17,0.2);
+            color: var(--accent);
+            font-size: 0.72rem; font-weight: 600;
+            padding: 4px 12px; border-radius: 50px;
+        }
+
+        .modal-overlay {
+            position: fixed; inset: 0;
+            background: rgba(8,9,12,0.88);
+            z-index: 8000;
+            display: none;
+            justify-content: center; align-items: center;
+            padding: 24px;
+            backdrop-filter: blur(8px);
+        }
+        .modal-overlay.open { display: flex; }
+        .modal-box {
+            background: var(--surface);
+            border: 1px solid rgba(252,163,17,0.28);
+            border-radius: var(--radius);
+            padding: 36px 28px;
+            max-width: 360px; width: 100%;
+            text-align: center;
+        }
+        .modal-icon { font-size: 1.8rem; margin-bottom: 12px; }
+        .modal-box h3 { font-size: 1.15rem; font-weight: 800; margin-bottom: 8px; }
+        .modal-box p { color: var(--txt-muted); font-size: 0.88rem; margin-bottom: 24px; line-height: 1.55; }
+        .modal-btns { display: flex; gap: 10px; justify-content: center; }
+        .modal-btn {
+            padding: 12px 24px; border: none; border-radius: 50px;
+            font-weight: 700; font-size: 0.85rem;
+            cursor: pointer; transition: transform .15s;
+        }
+        .modal-btn:hover { transform: translateY(-1px); }
+        .modal-cancel  { background: var(--surface2); color: var(--txt-muted); border: 1px solid var(--border); }
+        .modal-confirm { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #08090c; }
+
+        /* ============================================================
+           RESPONSIVE SYSTEM
+           The page scales in 4 tiers based on viewport width:
+           - <=380px  : small phones (single column, tighter type)
+           - 381-599px: phones (default / base styles above)
+           - 600-899px: tablets (wider grids, bigger cards)
+           - >=900px  : desktop (2-column home layout, 4-col grids)
+           Font sizes across the whole page use clamp() so they scale
+           fluidly between breakpoints instead of jumping.
+        ============================================================ */
+
+        .profile-name  { font-size: clamp(1.3rem, 5vw, 1.7rem); }
+        .top-bar-title { font-size: clamp(0.95rem, 3.2vw, 1.1rem); }
+        .video-title   { font-size: clamp(0.85rem, 2.6vw, 0.95rem); }
+        .girl-name     { font-size: clamp(1rem, 3.4vw, 1.1rem); }
+        .player-title-text { font-size: clamp(1.15rem, 4.5vw, 1.4rem); }
+
+        /* Small phones */
+        @media (max-width: 380px) {
+            .banner { height: 120px; }
+            .avatar { width: 64px; height: 64px; }
+            .avatar-wrap { margin-top: -32px; }
+            .girl-img { height: 130px; }
+            .girls-grid, .videos-grid {
+                grid-template-columns: 1fr;
+                gap: 10px; padding: 8px 12px 12px;
+            }
+            .nav-img { height: 100px; }
+            .girls-banner { max-height: 120px; }
+        }
+
+        /* Tablets */
+        @media (min-width: 600px) and (max-width: 899px) {
+            .hub-wrap { max-width: 640px; }
+            .girls-grid, .videos-grid { grid-template-columns: repeat(3, 1fr); }
+            .banner { height: 190px; }
+        }
+
+        /* Desktop */
+        @media (min-width: 900px) {
+            .hub-wrap { max-width: 1040px; }
+            .home-grid.active { grid-template-columns: 340px 1fr; gap: 16px; align-items: start; }
+            .girls-grid, .videos-grid { grid-template-columns: repeat(4, 1fr); }
+            .banner { height: 200px; }
+        }
+
+        /* Large desktop */
+        @media (min-width: 1300px) {
+            .hub-wrap { max-width: 1200px; }
+        }
+
+        @media (min-width: 700px) {
+            .player-video-wrap video { max-height: 70vh; }
+        }
+
+        /* Respect reduced-motion preference */
+        @media (prefers-reduced-motion: reduce) {
+            .bg-emoji, .hub-wrap, .view.active { animation: none !important; }
+            * { transition-duration: 0.01ms !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="animated-bg"></div>
+
+<div id="age-gate" class="gate-overlay">
+    <div class="gate-box">
+        <div class="gate-icon">🔞</div>
+        <h2>Adults Only</h2>
+        <p>This hub contains mature content for adults 18 years of age or older. By entering you confirm you are of legal age.</p>
+        <button class="gate-btn" onclick="exitAgeGate()">I AM 18+ — ENTER</button>
+    </div>
+</div>
+
+<div id="exit-modal" class="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-icon">🔗</div>
+        <h3>Leaving the Hub</h3>
+        <p>You're about to open an external link in a new tab. Do you want to continue?</p>
+        <div class="modal-btns">
+            <button class="modal-btn modal-cancel" onclick="closeModal()">Cancel</button>
+            <button class="modal-btn modal-confirm" id="confirm-redirect">Continue</button>
+        </div>
+    </div>
+</div>
+
+<div class="hub-wrap" id="hub-wrap">
+
+    <div id="view-home" class="view home-grid">
+        <div class="home-col-left">
+            <div class="profile-card">
+                <img src="imageP3.png" class="banner" alt="Banner"
+                     onerror="this.style.background='linear-gradient(135deg,#1a1408,#2a1f00)';this.style.height='160px';">
+                <div class="profile-meta">
+                    <div class="avatar-wrap">
+                        <img src="imageP1.png" class="avatar" alt="PixelToast">
+                    </div>
+                    <div class="profile-name">PixelToast</div>
+                    <p class="profile-bio">Welcome to the official PixelToast hub — your go-to spot for exclusive NSFW animated content, character galleries, and community links.</p>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-combo">
+                    <img src="imageP2.png" class="nav-img">
+                    <a href="#" class="nav-card" onclick="confirmExit(event,'https://x.com/ToastPixel60913')">
+                        <div class="nav-icon">𝕏</div>
+                        <div class="nav-text-wrap">
+                            <div class="nav-label">X / Twitter</div>
+                            <div class="nav-desc">i uplaod all of my content here, and usually some updates about some animations</div>
+                        </div>
+                        <div class="nav-arrow">›</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="home-col-right">
+            <div class="nav-section">
+                <div class="nav-combo">
+                    <div class="nav-img-scroll">
+                        <img src="imageP9.png" class="nav-img">
+                    </div>
+                    <div class="nav-card" onclick="switchView('view-girls')">
+                        <div class="nav-icon">❤️</div>
+                        <div class="nav-text-wrap">
+                            <div class="nav-label">My Girls</div>
+                            <div class="nav-desc">Character database and exclusive galleries</div>
+                        </div>
+                        <div class="nav-arrow">›</div>
+                    </div>
+                </div>
+
+                <div class="nav-card" onclick="switchView('view-videos')">
+                    <div class="nav-icon">🎬</div>
+                    <div class="nav-text-wrap">
+                        <div class="nav-label">Video Archive</div>
+                        <div class="nav-desc">Full collection of exclusive animated content</div>
+                    </div>
+                    <div class="nav-arrow">›</div>
+                </div>
+
+                <div class="nav-combo discord-combo">
+                    <div class="nav-img-scroll">
+                        <img src="imageD1.png" class="nav-img">
+                    </div>
+                    <a href="#" class="nav-card" onclick="confirmExit(event,'https://discord.gg/R7wUBXG5FN')">
+                        <div class="nav-icon" style="background:rgba(88,101,242,0.12);border-color:rgba(88,101,242,0.25);">💬</div>
+                        <div class="nav-text-wrap">
+                            <div class="nav-label">Discord Server</div>
+                            <div class="nav-desc">Community, chat &amp; MEGA link inside ⭐</div>
+                        </div>
+                        <div class="nav-arrow">›</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-girls" class="view">
+        <div class="top-bar">
+            <button class="back-btn" onclick="switchView('view-home')">← Back</button>
+            <span class="top-bar-title">My Girls</span>
+        </div>
+        <img src="banner.png" class="girls-banner" alt="My Girls Banner"
+             onerror="this.style.display='none';">
+        <div class="section-label">Character Roster</div>
+        <div class="girls-grid">
+            <div class="girl-card">
+                <img src="imagePV.png" class="girl-img" alt="Veronica">
+                <div class="girl-body">
+                    <div class="girl-name">Veronica</div>
+                    <p class="girl-desc">Veronica is a vibrant woman from Mexico with a bold appetite. She absolutely loves traditional meats like carne asada and street tacos—the spicier, the better! Even though she knows spicy food makes her very gassy, she's totally unapologetic about it. For her, the amazing flavor is always worth the consequences, and she never lets it stop her from enjoying her favorite meals.</p>
+                </div>
+            </div>
+            <div class="girl-card">
+                <img src="imagePS.png" class="girl-img" alt="Sarah">
+                <div class="girl-body">
+                    <div class="girl-name">Sarah</div>
+                    <p class="girl-desc">Sarah is an easy-going girl from the USA who isn't picky at all when it comes to food—as long as it's junk food! She's a huge fan of anything greasy and fried. The only downside is that all that grease messes with her stomach and leads to frequent bathroom trips. She doesn't exactly suffer from it, but she finds the constant interruption quite uncomfortable and inconvenient.</p>
+                </div>
+            </div>
+            <div class="girl-card">
+                <img src="imagePA.png" class="girl-img" alt="Alexa">
+                <div class="girl-body">
+                    <div class="girl-name">Alexa</div>
+                    <p class="girl-desc">Alexa is a sweet, soft-spoken girl from the USA. Due to her shy nature, she tends to keep to herself and has a very small circle of friends. Her biggest weakness is sugar, but unfortunately, she's lactose intolerant. Even though she knows she'll regret it later, her cravings often get the best of her; she'll absentmindedly snack on desserts without checking if they contain dairy. She hates the struggle that follows, but she just can't resist a good treat.</p>
+                </div>
+            </div>
+            <div class="girl-card">
+                <img src="imagePN.png" class="girl-img" alt="Nor">
+                <div class="girl-body">
+                    <div class="girl-name">Nor</div>
+                    <p class="girl-desc">Meet Nor, a bold and unapologetic girl from Canada. Despite having a sensitive stomach due to frequent IBS, Nor refuses to limit her diet and indulges in whatever she craves. This lifestyle keeps her extremely gassy and constantly heading to the restroom, but she doesn't mind one bit. She's completely shameless about her body's reactions, embracing the consequences with a confident and relaxed attitude.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-videos" class="view">
+        <div class="top-bar">
+            <button class="back-btn" onclick="switchView('view-home')">← Back</button>
+            <span class="top-bar-title">Video Archive</span>
+        </div>
+        <div class="section-label">Categories</div>
+        <div class="filter-tabs" id="filter-tabs"></div>
+        <div class="section-label">Characters</div>
+        <div class="filter-tabs" id="character-tabs"></div>
+        <div class="videos-grid" id="videos-grid"></div>
+    </div>
+
+</div>
+
+<div id="view-player">
+    <div class="player-topbar">
+        <button class="back-btn" onclick="stopAndBack()">← Back</button>
+        <span class="player-topbar-title">Now Playing</span>
+    </div>
+    <div class="player-video-wrap">
+        <video id="main-player" controls controlsList="nodownload" playsinline>
+            <source src="" type="video/mp4">
+        </video>
+    </div>
+    <div class="player-meta">
+        <div class="player-title-text" id="player-title">—</div>
+        <p class="player-desc-text" id="player-desc"></p>
+        <div class="player-divider"></div>
+        <span class="player-tag" id="player-tag">Animation</span>
+    </div>
+</div>
+
+<script>
+// ============================================================
+// CATEGORIES: edit names/labels here. "key" must match the
+// "category" field used in videoConfig below. "label" is what
+// shows up on the filter button.
+// ============================================================
+const categoryConfig = [
+    { key: "categoria1", label: "Categoria 1" },
+    { key: "categoria2", label: "Categoria 2" },
+    { key: "categoria3", label: "Categoria 3" },
+];
+
+// ============================================================
+// VIDEOS: fileName now points into a per-character folder,
+// e.g. "characters/Veronica/video.mp4". Put each character's
+// clips inside their own folder to keep things organized.
+// ============================================================
+const videoConfig = [
+    {
+        fileName: "characters/Veronica/video1.mp4",
+        title:    "Carribassa Gassy Gift",
+        desc:     "45",
+        tag:      "Animation",
+        category: "categoria1",
+        character:"Veronica"
+    },
+    {
+        fileName: "characters/Sarah/video2.mp4",
+        title:    "Thanksgiving Shit",
+        desc:     "2",
+        tag:      "Animation",
+        category: "categoria1",
+        character:"Sarah"
+    },
+    {
+        fileName: "characters/Sarah/video3.mp4",
+        title:    "Sarah Christmas Dump",
+        desc:     "1",
+        tag:      "Animation",
+        category: "categoria2",
+        character:"Sarah"
+    },
+    {
+        fileName: "characters/Alexa/video4.mp4",
+        title:    "Hinata Gassy Hallway",
+        desc:     "Parte 1 :V.",
+        tag:      "Animation",
+        category: "categoria3",
+        character:"Alexa"
+    },
+];
+
+let catFilter = 'all';
+let charFilter = 'all';
+
+function captureThumb(videoSrc, imgEl, loadingEl) {
+    const vid = document.createElement('video');
+    vid.muted = true;
+    vid.playsInline = true;
+    vid.preload = 'auto';
+    vid.style.position = 'fixed';
+    vid.style.top = '0';
+    vid.style.left = '0';
+    vid.style.width = '1px';
+    vid.style.height = '1px';
+    vid.style.opacity = '0';
+    vid.style.pointerEvents = 'none';
+    document.body.appendChild(vid);
+
+    const cleanup = () => {
+        vid.pause();
+        vid.removeAttribute('src');
+        vid.load();
+        vid.remove();
+    };
+
+    vid.addEventListener('loadedmetadata', () => {
+        const mid = (isFinite(vid.duration) && vid.duration > 0) ? vid.duration / 2 : 1;
+        vid.currentTime = mid;
+    });
+
+    vid.addEventListener('seeked', () => {
+        const canvas = document.createElement('canvas');
+        canvas.width  = vid.videoWidth  || 640;
+        canvas.height = vid.videoHeight || 360;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(vid, 0, 0, canvas.width, canvas.height);
+        try {
+            imgEl.src = canvas.toDataURL('image/jpeg', 0.85);
+            imgEl.style.display = 'block';
+            if (loadingEl) loadingEl.remove();
+        } catch(e) {
+            if (loadingEl) loadingEl.remove();
+            showFallback(imgEl.parentElement);
+        }
+        cleanup();
+    }, { once: true });
+
+    vid.addEventListener('error', () => {
+        if (loadingEl) loadingEl.remove();
+        showFallback(imgEl.parentElement);
+        cleanup();
+    });
+
+    vid.src = videoSrc;
+    vid.load();
+    const playAttempt = vid.play();
+    if (playAttempt !== undefined) {
+        playAttempt.then(() => vid.pause()).catch(() => {});
+    }
+}
+
+function showFallback(wrap) {
+    const fb = document.createElement('div');
+    fb.className = 'thumb-fallback';
+    fb.textContent = '🎬';
+    wrap.insertBefore(fb, wrap.firstChild);
+}
+
+function initFilterTabs() {
+    const catWrap = document.getElementById('filter-tabs');
+    catWrap.innerHTML = '<button class="filter-btn active" data-filter="all">All</button>';
+    categoryConfig.forEach(c => {
+        const btn = document.createElement('button');
+        btn.className = 'filter-btn';
+        btn.dataset.filter = c.key;
+        btn.textContent = c.label;
+        catWrap.appendChild(btn);
+    });
+    catWrap.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            catWrap.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            catFilter = btn.dataset.filter;
+            applyFilters();
+        });
+    });
+
+    const charWrap = document.getElementById('character-tabs');
+    const chars = [...new Set(videoConfig.map(v => v.character))];
+    charWrap.innerHTML = '<button class="filter-btn active" data-filter="all">All</button>';
+    chars.forEach(name => {
+        const btn = document.createElement('button');
+        btn.className = 'filter-btn';
+        btn.dataset.filter = name;
+        btn.textContent = name;
+        charWrap.appendChild(btn);
+    });
+    charWrap.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            charWrap.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            charFilter = btn.dataset.filter;
+            applyFilters();
+        });
+    });
+}
+
+function initVideos() {
+    initFilterTabs();
+
+    const grid = document.getElementById('videos-grid');
+    grid.innerHTML = '';
+    videoConfig.forEach((v, i) => {
+        const card = document.createElement('div');
+        card.className = 'video-card';
+        card.dataset.category = v.category;
+        card.dataset.character = v.character;
+
+        const thumbWrap = document.createElement('div');
+        thumbWrap.className = 'video-thumb-wrap';
+
+        const loading = document.createElement('div');
+        loading.className = 'thumb-loading';
+        const spinner = document.createElement('div');
+        spinner.className = 'thumb-spinner';
+        loading.appendChild(spinner);
+
+        const img = document.createElement('img');
+        img.className = 'video-thumb';
+        img.alt = v.title;
+        img.style.display = 'none';
+
+        const playBadge = document.createElement('div');
+        playBadge.className = 'play-badge';
+        playBadge.innerHTML = '<div class="play-circle"><div class="play-triangle"></div></div>';
+
+        const numBadge = document.createElement('span');
+        numBadge.className = 'vid-num';
+        numBadge.textContent = '#' + (i + 1);
+
+        thumbWrap.appendChild(loading);
+        thumbWrap.appendChild(img);
+        thumbWrap.appendChild(playBadge);
+        thumbWrap.appendChild(numBadge);
+
+        const info = document.createElement('div');
+        info.className = 'video-info';
+        info.innerHTML = `
+            <div class="video-title">${v.title}</div>
+            <p class="video-desc">${v.desc}</p>
+            <span class="video-tag">${v.tag}</span>
+        `;
+
+        card.appendChild(thumbWrap);
+        card.appendChild(info);
+        card.onclick = () => openPlayer(v);
+        grid.appendChild(card);
+
+        captureThumb(v.fileName, img, loading);
+    });
+    applyFilters();
+}
+
+function applyFilters() {
+    document.querySelectorAll('#videos-grid .video-card').forEach(card => {
+        const okCat = catFilter === 'all' || card.dataset.category === catFilter;
+        const okChar = charFilter === 'all' || card.dataset.character === charFilter;
+        card.style.display = (okCat && okChar) ? '' : 'none';
+    });
+}
+
+function openPlayer(v) {
+    const player = document.getElementById('main-player');
+    player.src = v.fileName;
+    document.getElementById('player-title').textContent = v.title;
+    document.getElementById('player-desc').textContent  = v.desc;
+    document.getElementById('player-tag').textContent   = v.tag;
+    const el = document.getElementById('view-player');
+    el.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    window.scrollTo(0, 0);
+    player.play();
+}
+
+function stopAndBack() {
+    const p = document.getElementById('main-player');
+    p.pause(); p.currentTime = 0; p.src = '';
+    document.getElementById('view-player').style.display = 'none';
+    document.body.style.overflow = '';
+}
+
+function switchView(id) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function exitAgeGate() {
+    const gate = document.getElementById('age-gate');
+    gate.style.animation = 'fadeOut .5s forwards';
+    setTimeout(() => {
+        gate.style.display = 'none';
+        const wrap = document.getElementById('hub-wrap');
+        wrap.style.display = 'flex';
+        wrap.style.flexDirection = 'column';
+        switchView('view-home');
+        initVideos();
+    }, 500);
+}
+
+let pendingUrl = '';
+function confirmExit(e, url) {
+    e.preventDefault();
+    pendingUrl = url;
+    document.getElementById('exit-modal').classList.add('open');
+}
+function closeModal() {
+    document.getElementById('exit-modal').classList.remove('open');
+}
+document.getElementById('confirm-redirect').onclick = () => {
+    window.open(pendingUrl, '_blank');
+    closeModal();
+};
+
+const bg = document.getElementById('animated-bg');
+['🍞','🧈','🥐','🥖','🍳'].forEach(em => {
+    for (let i = 0; i < 4; i++) {
+        const s = document.createElement('span');
+        s.className = 'bg-emoji';
+        s.textContent = em;
+        s.style.left = Math.random() * 100 + '%';
+        s.style.animationDuration = (Math.random() * 14 + 12) + 's';
+        s.style.animationDelay    = (Math.random() * 12) + 's';
+        bg.appendChild(s);
+    }
+});
+</script>
+</body>
+</html>
