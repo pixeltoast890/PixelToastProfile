@@ -92,6 +92,7 @@
 
         .hub-wrap {
             width: 100%; max-width: 540px;
+            margin: 0 auto;
             display: none;
             animation: slideUp .6s var(--ease) forwards;
         }
@@ -141,7 +142,7 @@
         }
 
         .nav-section {
-            padding: 16px;
+            padding: 8px 16px 16px;
             display: flex; flex-direction: column; gap: 0;
         }
         .nav-img {
@@ -188,6 +189,34 @@
         .nav-label { font-size: 0.95rem; font-weight: 700; margin-bottom: 2px; }
         .nav-desc  { color: var(--txt-muted); font-size: 0.82rem; line-height: 1.4; }
         .nav-arrow { color: var(--txt-muted); font-size: 1.1rem; margin-left: auto; flex-shrink: 0; }
+
+        .nav-combo {
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            margin-bottom: 12px;
+            transition: border-color .2s, transform .2s;
+        }
+        .nav-combo:hover { border-color: rgba(252,163,17,0.35); transform: translateX(3px); }
+        .nav-combo .nav-img { border-radius: 0; }
+        .nav-combo .nav-card {
+            border: none;
+            border-radius: 0;
+            margin-bottom: 0;
+            background: linear-gradient(to bottom, rgba(252,163,17,0.07), var(--surface));
+        }
+        .nav-combo .nav-card:hover {
+            background: linear-gradient(to bottom, rgba(252,163,17,0.12), var(--surface2));
+            transform: none;
+        }
+        .nav-combo.discord-combo { border-color: rgba(88,101,242,0.28); }
+        .nav-combo.discord-combo:hover { border-color: rgba(88,101,242,0.6); }
+        .nav-combo.discord-combo .nav-card {
+            background: linear-gradient(135deg, rgba(88,101,242,0.1), rgba(252,163,17,0.04));
+        }
+        .nav-combo.discord-combo .nav-card:hover {
+            background: linear-gradient(135deg, rgba(88,101,242,0.16), rgba(252,163,17,0.06));
+        }
 
         .discord-card {
             background: linear-gradient(135deg, rgba(88,101,242,0.1), rgba(252,163,17,0.04));
@@ -470,7 +499,7 @@
         }
         @media (min-width: 900px) {
             .hub-wrap { max-width: 980px; }
-            .home-grid { display: grid; grid-template-columns: 340px 1fr; gap: 16px; align-items: start; }
+            .home-grid.active { grid-template-columns: 340px 1fr; gap: 16px; align-items: start; }
         }
         @media (min-width: 700px) {
             .player-video-wrap video { max-height: 70vh; }
@@ -519,38 +548,44 @@
             </div>
 
             <div class="nav-section">
-                <img src="imageP2.png" class="nav-img">
-                <a href="#" class="nav-card attached" onclick="confirmExit(event,'https://x.com/ToastPixel60913')">
-                    <div class="nav-icon">𝕏</div>
-                    <div class="nav-text-wrap">
-                        <div class="nav-label">X / Twitter</div>
-                        <div class="nav-desc">i uplaod all of my content here, and usually some updates about some animations</div>
-                    </div>
-                    <div class="nav-arrow">›</div>
-                </a>
+                <div class="nav-combo">
+                    <img src="imageP2.png" class="nav-img">
+                    <a href="#" class="nav-card" onclick="confirmExit(event,'https://x.com/ToastPixel60913')">
+                        <div class="nav-icon">𝕏</div>
+                        <div class="nav-text-wrap">
+                            <div class="nav-label">X / Twitter</div>
+                            <div class="nav-desc">i uplaod all of my content here, and usually some updates about some animations</div>
+                        </div>
+                        <div class="nav-arrow">›</div>
+                    </a>
+                </div>
 
-                <img src="imageP3.png" class="nav-img" style="margin-top:4px;">
-                <a href="#" class="nav-card attached discord-card" onclick="confirmExit(event,'https://discord.gg/R7wUBXG5FN')">
-                    <div class="nav-icon" style="background:rgba(88,101,242,0.12);border-color:rgba(88,101,242,0.25);">💬</div>
-                    <div class="nav-text-wrap">
-                        <div class="nav-label">Discord Server</div>
-                        <div class="nav-desc">Community, chat &amp; MEGA link inside ⭐</div>
-                    </div>
-                    <div class="nav-arrow">›</div>
-                </a>
+                <div class="nav-combo discord-combo">
+                    <img src="imageP3.png" class="nav-img">
+                    <a href="#" class="nav-card" onclick="confirmExit(event,'https://discord.gg/R7wUBXG5FN')">
+                        <div class="nav-icon" style="background:rgba(88,101,242,0.12);border-color:rgba(88,101,242,0.25);">💬</div>
+                        <div class="nav-text-wrap">
+                            <div class="nav-label">Discord Server</div>
+                            <div class="nav-desc">Community, chat &amp; MEGA link inside ⭐</div>
+                        </div>
+                        <div class="nav-arrow">›</div>
+                    </a>
+                </div>
             </div>
         </div>
 
         <div class="home-col-right">
             <div class="nav-section">
-                <img src="imageP9.png" class="nav-img">
-                <div class="nav-card attached" onclick="switchView('view-girls')">
-                    <div class="nav-icon">❤️</div>
-                    <div class="nav-text-wrap">
-                        <div class="nav-label">My Girls</div>
-                        <div class="nav-desc">Character database and exclusive galleries</div>
+                <div class="nav-combo">
+                    <img src="imageP9.png" class="nav-img">
+                    <div class="nav-card" onclick="switchView('view-girls')">
+                        <div class="nav-icon">❤️</div>
+                        <div class="nav-text-wrap">
+                            <div class="nav-label">My Girls</div>
+                            <div class="nav-desc">Character database and exclusive galleries</div>
+                        </div>
+                        <div class="nav-arrow">›</div>
                     </div>
-                    <div class="nav-arrow">›</div>
                 </div>
 
                 <div class="nav-card" onclick="switchView('view-videos')">
