@@ -141,6 +141,15 @@
             font-weight: 400;
         }
 
+        .archive-banner {
+            max-height: 150px;
+            object-fit: cover;
+            display: block;
+            border-radius: var(--radius-sm);
+            margin: 4px 16px 0;
+            width: calc(100% - 32px);
+        }
+
         .nav-section {
             padding: 8px 16px 16px;
             display: flex; flex-direction: column; gap: 0;
@@ -489,20 +498,65 @@
         .modal-cancel  { background: var(--surface2); color: var(--txt-muted); border: 1px solid var(--border); }
         .modal-confirm { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #08090c; }
 
-        @media (max-width: 400px) {
-            .profile-name { font-size: 1.4rem; }
-            .banner { height: 130px; }
-            .avatar { width: 68px; height: 68px; }
-            .avatar-wrap { margin-top: -34px; }
-            .girl-img { height: 140px; }
-            .girls-grid, .videos-grid { gap: 10px; padding: 8px 12px 12px; }
+        /* ============================================================
+           RESPONSIVE SYSTEM
+           The page scales in 4 tiers based on viewport width:
+           - <=380px  : small phones (single column, tighter type)
+           - 381-599px: phones (default / base styles above)
+           - 600-899px: tablets (wider grids, bigger cards)
+           - >=900px  : desktop (2-column home layout, 4-col grids)
+           Font sizes across the whole page use clamp() so they scale
+           fluidly between breakpoints instead of jumping.
+        ============================================================ */
+
+        .profile-name  { font-size: clamp(1.3rem, 5vw, 1.7rem); }
+        .top-bar-title { font-size: clamp(0.95rem, 3.2vw, 1.1rem); }
+        .video-title   { font-size: clamp(0.85rem, 2.6vw, 0.95rem); }
+        .girl-name     { font-size: clamp(1rem, 3.4vw, 1.1rem); }
+        .player-title-text { font-size: clamp(1.15rem, 4.5vw, 1.4rem); }
+
+        /* Small phones */
+        @media (max-width: 380px) {
+            .banner { height: 120px; }
+            .avatar { width: 64px; height: 64px; }
+            .avatar-wrap { margin-top: -32px; }
+            .girl-img { height: 130px; }
+            .girls-grid, .videos-grid {
+                grid-template-columns: 1fr;
+                gap: 10px; padding: 8px 12px 12px;
+            }
+            .nav-img { height: 100px; }
+            .archive-banner { max-height: 110px; }
         }
+
+        /* Tablets */
+        @media (min-width: 600px) and (max-width: 899px) {
+            .hub-wrap { max-width: 640px; }
+            .girls-grid, .videos-grid { grid-template-columns: repeat(3, 1fr); }
+            .banner { height: 190px; }
+        }
+
+        /* Desktop */
         @media (min-width: 900px) {
-            .hub-wrap { max-width: 980px; }
+            .hub-wrap { max-width: 1040px; }
             .home-grid.active { grid-template-columns: 340px 1fr; gap: 16px; align-items: start; }
+            .girls-grid, .videos-grid { grid-template-columns: repeat(4, 1fr); }
+            .banner { height: 200px; }
         }
+
+        /* Large desktop */
+        @media (min-width: 1300px) {
+            .hub-wrap { max-width: 1200px; }
+        }
+
         @media (min-width: 700px) {
             .player-video-wrap video { max-height: 70vh; }
+        }
+
+        /* Respect reduced-motion preference */
+        @media (prefers-reduced-motion: reduce) {
+            .bg-emoji, .hub-wrap, .view.active { animation: none !important; }
+            * { transition-duration: 0.01ms !important; }
         }
     </style>
 </head>
@@ -643,21 +697,12 @@
             <button class="back-btn" onclick="switchView('view-home')">← Back</button>
             <span class="top-bar-title">Video Archive</span>
         </div>
+        <img src="imageV.png" class="archive-banner" alt="Video Archive"
+             onerror="this.style.display='none';">
         <div class="section-label">Categories</div>
-        <div class="filter-tabs" id="filter-tabs">
-            <button class="filter-btn active" data-filter="all">All</button>
-            <button class="filter-btn" data-filter="categoria1">Categoria 1</button>
-            <button class="filter-btn" data-filter="categoria2">Categoria 2</button>
-            <button class="filter-btn" data-filter="categoria3">Categoria 3</button>
-        </div>
+        <div class="filter-tabs" id="filter-tabs"></div>
         <div class="section-label">Characters</div>
-        <div class="filter-tabs" id="character-tabs">
-            <button class="filter-btn active" data-filter="all">All</button>
-            <button class="filter-btn" data-filter="Veronica">Veronica</button>
-            <button class="filter-btn" data-filter="Sarah">Sarah</button>
-            <button class="filter-btn" data-filter="Alexa">Alexa</button>
-            <button class="filter-btn" data-filter="Nor">Nor</button>
-        </div>
+        <div class="filter-tabs" id="character-tabs"></div>
         <div class="videos-grid" id="videos-grid"></div>
     </div>
 
@@ -682,9 +727,25 @@
 </div>
 
 <script>
+// ============================================================
+// CATEGORIES: edit names/labels here. "key" must match the
+// "category" field used in videoConfig below. "label" is what
+// shows up on the filter button.
+// ============================================================
+const categoryConfig = [
+    { key: "categoria1", label: "Scat" },
+    { key: "categoria2", label: "Fart" },
+    { key: "categoria3", label: "FaceFart" },
+];
+
+// ============================================================
+// VIDEOS: fileName now points into a per-character folder,
+// e.g. "characters/Veronica/video.mp4". Put each character's
+// clips inside their own folder to keep things organized.
+// ============================================================
 const videoConfig = [
     {
-        fileName: "video1.mp4",
+        fileName: "characters/Veronica/video1.mp4",
         title:    "Carribassa Gassy Gift",
         desc:     "45",
         tag:      "Animation",
@@ -692,7 +753,7 @@ const videoConfig = [
         character:"Veronica"
     },
     {
-        fileName: "video2.mp4",
+        fileName: "characters/Sarah/video2.mp4",
         title:    "Thanksgiving Shit",
         desc:     "2",
         tag:      "Animation",
@@ -700,7 +761,7 @@ const videoConfig = [
         character:"Sarah"
     },
     {
-        fileName: "video3.mp4",
+        fileName: "characters/Sarah/video3.mp4",
         title:    "Sarah Christmas Dump",
         desc:     "1",
         tag:      "Animation",
@@ -708,7 +769,7 @@ const videoConfig = [
         character:"Sarah"
     },
     {
-        fileName: "video4.mp4",
+        fileName: "characters/Alexa/video4.mp4",
         title:    "Hinata Gassy Hallway",
         desc:     "Parte 1 :V.",
         tag:      "Animation",
@@ -785,7 +846,48 @@ function showFallback(wrap) {
     wrap.insertBefore(fb, wrap.firstChild);
 }
 
+function initFilterTabs() {
+    const catWrap = document.getElementById('filter-tabs');
+    catWrap.innerHTML = '<button class="filter-btn active" data-filter="all">All</button>';
+    categoryConfig.forEach(c => {
+        const btn = document.createElement('button');
+        btn.className = 'filter-btn';
+        btn.dataset.filter = c.key;
+        btn.textContent = c.label;
+        catWrap.appendChild(btn);
+    });
+    catWrap.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            catWrap.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            catFilter = btn.dataset.filter;
+            applyFilters();
+        });
+    });
+
+    const charWrap = document.getElementById('character-tabs');
+    const chars = [...new Set(videoConfig.map(v => v.character))];
+    charWrap.innerHTML = '<button class="filter-btn active" data-filter="all">All</button>';
+    chars.forEach(name => {
+        const btn = document.createElement('button');
+        btn.className = 'filter-btn';
+        btn.dataset.filter = name;
+        btn.textContent = name;
+        charWrap.appendChild(btn);
+    });
+    charWrap.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            charWrap.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            charFilter = btn.dataset.filter;
+            applyFilters();
+        });
+    });
+}
+
 function initVideos() {
+    initFilterTabs();
+
     const grid = document.getElementById('videos-grid');
     grid.innerHTML = '';
     videoConfig.forEach((v, i) => {
@@ -846,24 +948,6 @@ function applyFilters() {
         card.style.display = (okCat && okChar) ? '' : 'none';
     });
 }
-
-document.querySelectorAll('#filter-tabs .filter-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        document.querySelectorAll('#filter-tabs .filter-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        catFilter = btn.dataset.filter;
-        applyFilters();
-    });
-});
-
-document.querySelectorAll('#character-tabs .filter-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        document.querySelectorAll('#character-tabs .filter-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        charFilter = btn.dataset.filter;
-        applyFilters();
-    });
-});
 
 function openPlayer(v) {
     const player = document.getElementById('main-player');
